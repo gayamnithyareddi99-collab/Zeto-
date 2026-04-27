@@ -1,0 +1,1348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zeto  Aeroguard | AI-Powered Aviation Asset Transition Platform</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;600&family=Source+Sans+3:wght@300;400;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+
+:root{
+  --blue:#1D6FA4;
+  --blue-dim:#1559828;
+  --blue-dark:#0F4C75;
+  --deep:#F2F6FA;
+  --deep-mid:#E8EFF6;
+  --accent:#0EA5E9;
+  --accent-dark:#0284C7;
+  --white:#FFFFFF;
+  --off-white:#F8FAFC;
+  --text-dark:#0B1F35;
+  --text-muted:#3A5A78;
+  --card-bg:rgba(29,111,164,0.05);
+  --card-border:rgba(29,111,164,0.18);
+  --nav-h:68px;
+  --font:'Source Sans 3',sans-serif;
+  --mono:'IBM Plex Mono',monospace;
+  --serif:'Playfair Display',serif;
+  --transition:cubic-bezier(0.4,0,0.2,1);
+  --gold:#F59E0B;
+  --nav-bg:#0B1F35;
+  --hero-bg:#0B1F35;
+  --hero-mid:#0F2D4A;
+}
+
+body{font-family:var(--font);color:var(--text-dark);background:var(--off-white);overflow-x:hidden;}
+::-webkit-scrollbar{width:5px;}
+::-webkit-scrollbar-track{background:#E8EFF6;}
+::-webkit-scrollbar-thumb{background:var(--blue);border-radius:3px;}
+
+/* ============================================================
+   NAVBAR
+============================================================ */
+.navbar{
+  position:fixed;top:0;left:0;width:100%;height:var(--nav-h);
+  background:var(--nav-bg);backdrop-filter:blur(18px);
+  border-bottom:1px solid rgba(14,165,233,0.2);
+  z-index:900;display:flex;align-items:center;
+  padding:0 5%;justify-content:space-between;
+}
+.nav-logo{
+  font-family:var(--serif);font-size:21px;font-weight:700;
+  color:#38BDF8;letter-spacing:0.5px;
+  display:flex;align-items:center;gap:10px;cursor:pointer;text-decoration:none;
+}
+.nav-logo-icon{
+  width:34px;height:34px;background:linear-gradient(135deg,#0EA5E9,#0369A1);
+  border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.nav-logo-icon svg{width:20px;height:20px;}
+.nav-logo span{color:rgba(255,255,255,0.85);font-weight:400;font-family:var(--font);font-size:18px;}
+
+.nav-links{display:flex;align-items:center;gap:2px;list-style:none;}
+.nav-links li button{
+  background:none;border:none;
+  color:rgba(148,210,240,0.8);
+  font-size:11px;font-weight:600;
+  padding:7px 13px;border-radius:7px;
+  transition:all 0.25s;cursor:pointer;
+  font-family:var(--mono);letter-spacing:0.5px;
+  text-transform:uppercase;
+  position:relative;
+}
+.nav-links li button:hover,
+.nav-links li button.active{
+  color:#38BDF8;background:rgba(14,165,233,0.12);
+}
+.nav-links li button.active::after{
+  content:'';position:absolute;bottom:4px;left:50%;
+  transform:translateX(-50%);width:16px;height:2px;
+  background:#38BDF8;border-radius:2px;
+}
+.nav-cta{display:flex;align-items:center;gap:10px;}
+.btn-demo-nav{
+  background:linear-gradient(135deg,#0EA5E9,#0369A1);
+  color:#fff;border:none;padding:9px 20px;border-radius:7px;
+  font-size:12px;font-weight:700;cursor:pointer;
+  transition:all 0.25s;font-family:var(--mono);
+  letter-spacing:0.5px;text-transform:uppercase;
+}
+.btn-demo-nav:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(14,165,233,0.4);}
+
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:6px;background:none;border:none;}
+.hamburger span{width:22px;height:2px;background:#38BDF8;border-radius:2px;transition:0.3s;display:block;}
+
+.mobile-nav{
+  display:none;position:fixed;top:var(--nav-h);left:0;width:100%;
+  background:rgba(11,31,53,0.99);padding:20px 6%;
+  flex-direction:column;gap:4px;z-index:899;
+  border-bottom:1px solid rgba(14,165,233,0.2);
+}
+.mobile-nav.open{display:flex;}
+.mobile-nav button{
+  background:none;border:none;color:rgba(148,210,240,0.8);
+  font-size:15px;font-weight:600;padding:12px 0;
+  border-bottom:1px solid rgba(14,165,233,0.08);
+  cursor:pointer;font-family:var(--mono);text-align:left;
+  text-transform:uppercase;letter-spacing:1px;font-size:12px;
+}
+.mobile-nav button:hover{color:#38BDF8;}
+
+/* ============================================================
+   PAGE SYSTEM
+============================================================ */
+.page{display:none;min-height:100vh;padding-top:var(--nav-h);}
+.page.active{display:block;animation:pageIn 0.4s var(--transition);}
+@keyframes pageIn{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
+
+/* ============================================================
+   SECTION COMMONS
+============================================================ */
+.section-label{
+  display:inline-block;color:var(--accent);font-size:10px;font-weight:700;
+  letter-spacing:4px;text-transform:uppercase;margin-bottom:12px;font-family:var(--mono);
+}
+.section-title{font-family:var(--serif);font-size:38px;color:var(--blue-dark);line-height:1.2;margin-bottom:8px;}
+.section-divider{width:65px;height:2px;background:linear-gradient(90deg,var(--accent),transparent);margin:14px 0 26px;}
+
+/* ============================================================
+   HERO   dark navy (same deep dark as original)
+============================================================ */
+.hero-section{
+  position:relative;padding:140px 7% 90px;background:var(--hero-bg);
+  overflow:hidden;min-height:100vh;display:flex;align-items:center;
+}
+.hero-section::before{content:"";position:absolute;top:0;right:0;width:280px;height:280px;background:#0EA5E9;opacity:0.06;clip-path:polygon(100% 0,0 0,100% 100%);}
+.hero-section::after{content:"";position:absolute;bottom:0;left:0;width:300px;height:300px;background:#38BDF8;opacity:0.05;clip-path:polygon(0 100%,0 0,100% 100%);}
+.hero-glow{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:700px;height:700px;background:radial-gradient(circle,rgba(14,165,233,0.07) 0%,transparent 70%);pointer-events:none;}
+.hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(14,165,233,0.05) 1px,transparent 1px),linear-gradient(90deg,rgba(14,165,233,0.05) 1px,transparent 1px);background-size:60px 60px;pointer-events:none;}
+.hero-container{max-width:1200px;margin:auto;display:grid;grid-template-columns:1.1fr 0.9fr;gap:70px;align-items:center;position:relative;z-index:2;width:100%;}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(14,165,233,0.1);border:1px solid rgba(14,165,233,0.35);color:#38BDF8;font-size:10px;font-weight:700;letter-spacing:3px;padding:6px 16px;border-radius:3px;text-transform:uppercase;margin-bottom:18px;font-family:var(--mono);}
+.hero-badge::before{content:"";width:6px;height:6px;border-radius:50%;background:#38BDF8;animation:pulsedot 1.5s ease-in-out infinite;}
+@keyframes pulsedot{0%,100%{opacity:1;transform:scale(1);}50%{opacity:0.4;transform:scale(0.6);}}
+.hero-left h1{font-family:var(--serif);font-size:50px;line-height:1.12;color:#38BDF8;margin-bottom:8px;}
+.hero-left h1 span{color:#ffffff;}
+.hero-divider{width:70px;height:2px;background:linear-gradient(90deg,#38BDF8,transparent);margin:18px 0 22px;}
+.hero-text{color:rgba(186,224,245,0.85);font-size:17px;line-height:1.85;margin-bottom:34px;max-width:510px;}
+.hero-buttons{display:flex;gap:14px;flex-wrap:wrap;}
+.btn-blue{background:linear-gradient(135deg,#0EA5E9,#0369A1);color:#fff;padding:13px 30px;border-radius:4px;text-decoration:none;font-weight:700;font-size:12px;letter-spacing:1px;text-transform:uppercase;transition:0.3s;box-shadow:0 4px 20px rgba(14,165,233,0.3);font-family:var(--mono);border:none;cursor:pointer;}
+.btn-blue:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(14,165,233,0.45);}
+.btn-outline-blue{border:1px solid #38BDF8;color:#38BDF8;padding:13px 30px;border-radius:4px;text-decoration:none;font-weight:700;font-size:12px;letter-spacing:1px;text-transform:uppercase;transition:0.3s;font-family:var(--mono);background:none;cursor:pointer;}
+.btn-outline-blue:hover{background:rgba(14,165,233,0.1);}
+
+.hero-card{background:rgba(14,165,233,0.06);border:1px solid rgba(14,165,233,0.22);border-radius:12px;padding:32px;backdrop-filter:blur(8px);position:relative;overflow:hidden;}
+.hero-card::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#0EA5E9,#38BDF8);}
+.hero-card-title{font-family:var(--mono);color:#38BDF8;font-size:10px;letter-spacing:3px;text-transform:uppercase;margin-bottom:18px;}
+.hero-stat{display:flex;align-items:center;gap:14px;padding:13px 0;border-bottom:1px solid rgba(14,165,233,0.1);}
+.hero-stat:last-child{border-bottom:none;}
+.stat-dot{width:8px;height:8px;border-radius:50%;background:#38BDF8;flex-shrink:0;}
+.stat-dot.em{background:var(--gold);}
+.stat-label{color:rgba(186,224,245,0.8);font-size:14px;flex:1;}
+.stat-val{color:#38BDF8;font-weight:700;font-size:16px;font-family:var(--serif);letter-spacing:1px;}
+
+/* ============================================================
+   MARKET STRIP   medium navy
+============================================================ */
+.market-strip{background:#0F4C75;padding:50px 7%;}
+.stats-grid{max-width:1200px;margin:auto;display:grid;grid-template-columns:repeat(4,1fr);gap:40px;}
+.stat-item{text-align:center;}
+.stat-num{font-family:var(--serif);font-size:40px;color:#ffffff;font-weight:700;display:block;margin-bottom:8px;}
+.stat-desc{color:rgba(255,255,255,0.75);font-size:13px;line-height:1.65;}
+
+/* ============================================================
+   ABOUT   WHITE background
+============================================================ */
+.about-section{padding:120px 7%;background:#ffffff;position:relative;overflow:hidden;}
+.about-section::before{content:"";position:absolute;top:0;right:0;width:240px;height:240px;background:#0EA5E9;opacity:0.04;clip-path:polygon(100% 0,0 0,100% 100%);}
+.about-container{max-width:1100px;margin:auto;display:grid;grid-template-columns:1.3fr 1fr;gap:80px;align-items:center;position:relative;z-index:2;}
+.about-left .section-title{color:var(--blue-dark);}
+.about-left .section-label{color:var(--accent);}
+.about-left p{color:#3A5A78;line-height:1.85;margin-bottom:20px;font-size:16px;max-width:520px;}
+.about-features{margin-top:26px;display:grid;grid-template-columns:repeat(2,1fr);gap:10px;}
+.feature-tag{background:rgba(14,165,233,0.07);border:1px solid rgba(14,165,233,0.2);color:#0F4C75;padding:10px 16px;border-radius:5px;font-size:11px;font-weight:700;letter-spacing:0.5px;font-family:var(--mono);}
+.founder-box{background:#F0F7FF;border:1px solid rgba(14,165,233,0.2);padding:36px;border-radius:12px;position:relative;}
+.founder-box::before{content:'"';position:absolute;top:-20px;left:28px;font-size:80px;color:#0EA5E9;opacity:0.15;font-family:var(--serif);line-height:1;}
+.founder-box::after{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#0EA5E9,transparent);border-radius:12px 12px 0 0;}
+.founder-box-title{font-family:var(--mono);color:var(--accent);font-size:10px;letter-spacing:3px;text-transform:uppercase;margin-bottom:8px;}
+.founder-box-div{width:50px;height:2px;background:#0EA5E9;margin-bottom:16px;}
+.founder-box p{color:#3A5A78;line-height:1.8;margin-bottom:14px;font-size:15px;}
+.founder-box p strong{color:#0F4C75;}
+.contact-btn{display:inline-block;padding:10px 22px;background:#0EA5E9;color:#fff;text-decoration:none;border-radius:4px;font-weight:700;font-size:11px;letter-spacing:1px;text-transform:uppercase;margin-top:4px;transition:0.3s;font-family:var(--mono);}
+.contact-btn:hover{background:#38BDF8;}
+
+/* ============================================================
+   HOW IT WORKS  PROCESS SECTION   LIGHT GREY  (exact same as original off-white)
+============================================================ */
+.process-section{padding:120px 7%;background:#F1F5F9;position:relative;overflow:hidden;}
+.process-section::before{content:"";position:absolute;top:0;right:0;width:240px;height:240px;background:#0EA5E9;opacity:0.06;clip-path:polygon(100% 0,0 0,100% 100%);}
+.process-container{max-width:1200px;margin:auto;text-align:center;position:relative;z-index:2;}
+.process-container .section-title{color:var(--text-dark);}
+.process-container .section-label{color:var(--accent);}
+.process-container .section-divider{margin:14px auto 26px;}
+.process-sub{max-width:660px;margin:0 auto 55px;color:#3A5A78;line-height:1.8;font-size:16px;}
+.process-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:26px;}
+.process-card{background:#ffffff;padding:26px 20px;border-radius:10px;border:1px solid #CBD8E8;border-top:4px solid #0EA5E9;text-align:left;transition:0.35s;box-shadow:0 4px 20px rgba(0,0,0,0.05);}
+.process-card:hover{transform:translateY(-8px);box-shadow:0 20px 40px rgba(14,165,233,0.14);}
+.process-card-img{width:100%;height:135px;object-fit:cover;border-radius:7px;margin-bottom:14px;display:block;background:#E8EFF6;}
+.step-badge{font-family:var(--mono);font-size:10px;font-weight:700;color:#0369A1;letter-spacing:2px;margin-bottom:8px;}
+.process-card h3{font-family:var(--serif);color:var(--text-dark);font-size:18px;margin-bottom:10px;}
+.process-card p{color:#3A5A78;font-size:14px;line-height:1.7;}
+
+/* ============================================================
+   PLATFORM SECTION  dark navy (same as original --deep)
+============================================================ */
+.platform-section{padding:120px 7%;background:#0B1F35;}
+.platform-container{max-width:1200px;margin:auto;}
+.platform-sub{max-width:680px;color:rgba(186,224,245,0.8);line-height:1.8;font-size:16px;margin-bottom:55px;}
+.platform-section .section-title{color:#38BDF8;}
+.platform-section .section-label{color:#38BDF8;}
+.platform-section .section-divider{background:linear-gradient(90deg,#38BDF8,transparent);}
+.platform-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:26px;}
+.platform-card{background:rgba(14,165,233,0.05);border:1px solid rgba(14,165,233,0.18);border-radius:12px;overflow:hidden;transition:0.35s;position:relative;}
+.platform-card:hover{border-color:rgba(14,165,233,0.4);transform:translateY(-5px);}
+.platform-card::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#0EA5E9,transparent);}
+.platform-card-img{width:100%;height:160px;object-fit:cover;display:block;background:#0F2D4A;}
+.platform-card .inner{padding:24px;}
+.element-badge{display:inline-block;font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:4px 10px;border-radius:3px;background:rgba(14,165,233,0.12);color:#38BDF8;margin-bottom:10px;border:1px solid rgba(14,165,233,0.22);}
+.platform-card h3{font-family:var(--serif);color:#ffffff;font-size:19px;margin-bottom:10px;}
+.platform-card p{color:rgba(186,224,245,0.8);font-size:14px;line-height:1.7;}
+.platform-card .more-text{display:none;margin-top:10px;color:rgba(186,224,245,0.8);font-size:14px;line-height:1.7;}
+.platform-card.open .more-text{display:block;}
+.learn-btn{margin-top:14px;background:none;border:1px solid rgba(14,165,233,0.3);color:#38BDF8;padding:8px 18px;border-radius:4px;cursor:pointer;font-size:11px;font-weight:700;letter-spacing:1px;font-family:var(--mono);transition:0.3s;text-transform:uppercase;}
+.learn-btn:hover{background:rgba(14,165,233,0.1);}
+
+/* ============================================================
+   MARKET DATA GRAPHS PAGE  light grey
+============================================================ */
+.market-section{padding:120px 7%;background:#F1F5F9;}
+.market-container{max-width:1200px;margin:auto;}
+.market-section .section-title{color:var(--blue-dark);}
+.market-section .section-label{color:var(--accent);}
+.market-intro{max-width:680px;color:#3A5A78;font-size:16px;line-height:1.8;margin-bottom:60px;}
+.charts-grid{display:grid;grid-template-columns:1fr 1fr;gap:32px;margin-bottom:36px;}
+.chart-card{background:#ffffff;border:1px solid #CBD8E8;border-radius:12px;padding:28px;position:relative;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.04);}
+.chart-card::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#0EA5E9,transparent);}
+.chart-title{font-family:var(--mono);font-size:11px;color:#0369A1;letter-spacing:2px;text-transform:uppercase;margin-bottom:4px;}
+.chart-subtitle{color:#3A5A78;font-size:13px;margin-bottom:20px;}
+.chart-wrap{position:relative;height:230px;}
+.chart-card-full{background:#ffffff;border:1px solid #CBD8E8;border-radius:12px;padding:28px;position:relative;overflow:hidden;margin-bottom:36px;box-shadow:0 2px 12px rgba(0,0,0,0.04);}
+.chart-card-full::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#0EA5E9,#38BDF8,transparent);}
+.chart-wrap-full{position:relative;height:260px;}
+.radar-wrap{position:relative;height:280px;}
+
+/* KPIs row */
+.kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;margin-bottom:36px;}
+.kpi-card{background:#ffffff;border:1px solid #CBD8E8;border-radius:10px;padding:22px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,0.04);}
+.kpi-val{font-family:var(--serif);font-size:36px;color:#0EA5E9;display:block;margin-bottom:4px;}
+.kpi-label{color:#3A5A78;font-size:12px;font-family:var(--mono);letter-spacing:1px;text-transform:uppercase;}
+
+/* ============================================================
+   FINANCIAL SECTION  white
+============================================================ */
+.financial-section{padding:120px 7%;background:#ffffff;}
+.financial-container{max-width:1200px;margin:auto;}
+.financial-section .section-title{color:var(--blue-dark);}
+.financial-section .section-label{color:var(--accent);}
+.fin-intro{max-width:680px;color:#3A5A78;font-size:16px;line-height:1.8;margin-bottom:55px;}
+.fin-charts-grid{display:grid;grid-template-columns:1fr 1fr;gap:30px;margin-bottom:30px;}
+.fin-kpi-row{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-bottom:36px;}
+.fin-kpi{background:#F0F7FF;border:1px solid rgba(14,165,233,0.2);border-radius:10px;padding:24px;position:relative;}
+.fin-kpi::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#0EA5E9,transparent);border-radius:10px 10px 0 0;}
+.fin-kpi .fk-label{font-family:var(--mono);font-size:10px;color:#0369A1;letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;}
+.fin-kpi .fk-val{font-family:var(--serif);font-size:32px;color:var(--blue-dark);margin-bottom:4px;}
+.fin-kpi .fk-sub{color:#3A5A78;font-size:13px;}
+
+/* Sensitivity table */
+.sensitivity-table{width:100%;border-collapse:collapse;font-size:14px;}
+.sensitivity-table thead{position:sticky;top:0;z-index:1;}
+.sensitivity-table th{
+  font-family:var(--mono);font-size:10px;letter-spacing:2px;text-transform:uppercase;
+  color:#0369A1;padding:13px 18px;text-align:left;
+  background:#F0F7FF;
+  border-bottom:2px solid rgba(14,165,233,0.25);
+  white-space:nowrap;
+}
+.sensitivity-table td{
+  padding:13px 18px;color:#3A5A78;
+  border-bottom:1px solid rgba(14,165,233,0.08);
+  vertical-align:middle;font-size:14px;
+}
+.sensitivity-table tr:last-child td{border-bottom:none;}
+.sensitivity-table tr.base td{color:#0B1F35;font-weight:600;}
+.sensitivity-table tbody tr{transition:background 0.2s;}
+.sensitivity-table tbody tr:hover{background:rgba(14,165,233,0.04);}
+.pill-blue{display:inline-block;background:rgba(14,165,233,0.12);color:#0369A1;padding:3px 10px;border-radius:3px;font-family:var(--mono);font-size:11px;white-space:nowrap;border:1px solid rgba(14,165,233,0.2);}
+.sensitivity-table-wrap{width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:8px;}
+@media(max-width:620px){
+  .sensitivity-table-wrap{overflow:visible;}
+  .sensitivity-table{display:block;}
+  .sensitivity-table thead{display:none;}
+  .sensitivity-table tbody{display:flex;flex-direction:column;gap:12px;}
+  .sensitivity-table tbody tr{display:grid;grid-template-columns:1fr 1fr;gap:0;background:#F0F7FF;border:1px solid rgba(14,165,233,0.18);border-radius:10px;overflow:hidden;padding:0;}
+  .sensitivity-table tbody tr.base{border-color:rgba(14,165,233,0.4);background:rgba(14,165,233,0.08);}
+  .sensitivity-table td{padding:10px 14px;border-bottom:1px solid rgba(14,165,233,0.07);font-size:13px;position:relative;}
+  .sensitivity-table td::before{content:attr(data-label);display:block;font-family:var(--mono);font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#0369A1;margin-bottom:3px;opacity:0.8;}
+  .sensitivity-table td:first-child{grid-column:1/-1;background:rgba(14,165,233,0.07);font-weight:700;color:#0B1F35;font-size:14px;border-bottom:1px solid rgba(14,165,233,0.15);}
+  .sensitivity-table td:first-child::before{display:none;}
+  .sensitivity-table td:last-child{grid-column:1/-1;border-bottom:none;background:rgba(14,165,233,0.03);}
+}
+
+/* ============================================================
+   PRICING  light grey
+============================================================ */
+.pricing-section{padding:120px 7%;background:#F1F5F9;}
+.pricing-container{max-width:1100px;margin:auto;}
+.pricing-section .section-title{color:var(--blue-dark);}
+.pricing-section .section-label{color:var(--accent);}
+.pricing-sub{max-width:620px;color:#3A5A78;font-size:16px;line-height:1.8;margin-bottom:55px;}
+.pricing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:26px;}
+.price-card{background:#ffffff;border:1px solid #CBD8E8;border-radius:12px;padding:36px;position:relative;transition:0.35s;box-shadow:0 2px 12px rgba(0,0,0,0.04);}
+.price-card:hover{border-color:rgba(14,165,233,0.4);transform:translateY(-5px);box-shadow:0 12px 32px rgba(14,165,233,0.1);}
+.price-card.featured{border-color:rgba(14,165,233,0.5);background:#F0F7FF;}
+.price-card.featured::before{content:"MOST POPULAR";position:absolute;top:-14px;left:50%;transform:translateX(-50%);background:#0EA5E9;color:#fff;font-size:10px;font-weight:700;letter-spacing:2px;padding:4px 14px;border-radius:3px;font-family:var(--mono);}
+.price-tag{font-family:var(--mono);font-size:10px;color:#0369A1;letter-spacing:3px;text-transform:uppercase;margin-bottom:10px;}
+.price-card h3{font-family:var(--serif);font-size:22px;color:var(--blue-dark);margin-bottom:12px;}
+.price-card>p{color:#3A5A78;font-size:14px;line-height:1.7;margin-bottom:20px;}
+.price-amount{font-family:var(--serif);font-size:36px;color:#0EA5E9;display:block;margin-bottom:4px;}
+.price-unit{color:#3A5A78;font-size:12px;margin-bottom:24px;font-family:var(--mono);}
+.price-features{list-style:none;margin-bottom:28px;}
+.price-features li{display:flex;align-items:flex-start;gap:10px;padding:7px 0;border-bottom:1px solid rgba(14,165,233,0.08);color:#3A5A78;font-size:14px;line-height:1.5;}
+.price-features li:last-child{border-bottom:none;}
+.check{color:#0EA5E9;font-weight:700;flex-shrink:0;margin-top:1px;}
+.price-btn{display:block;text-align:center;padding:13px;border-radius:6px;font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;text-decoration:none;transition:0.3s;font-family:var(--mono);cursor:pointer;border:none;}
+.price-btn-blue{background:#0EA5E9;color:#fff;}
+.price-btn-blue:hover{background:#38BDF8;}
+.price-btn-outline{border:1px solid rgba(14,165,233,0.4) !important;color:#0369A1;background:none;}
+.price-btn-outline:hover{background:rgba(14,165,233,0.07);}
+
+/* ============================================================
+   FAQ  white
+============================================================ */
+.faq-section{padding:120px 7%;background:#ffffff;}
+.faq-container{max-width:900px;margin:auto;}
+.faq-section .section-title{color:var(--blue-dark);}
+.faq-section .section-label{color:var(--accent);}
+.faq-header{text-align:center;margin-bottom:55px;}
+.faq-header .section-divider{margin:14px auto 0;}
+.faq-item{border-bottom:1px solid rgba(14,165,233,0.12);}
+.faq-question{display:flex;justify-content:space-between;align-items:center;padding:22px 0;cursor:pointer;}
+.faq-question h4{font-family:var(--serif);font-size:18px;color:var(--blue-dark);flex:1;padding-right:20px;}
+.faq-icon{color:#0EA5E9;font-size:22px;font-weight:300;transition:0.3s;flex-shrink:0;}
+.faq-item.open .faq-icon{transform:rotate(45deg);}
+.faq-answer{display:none;padding-bottom:22px;color:#3A5A78;line-height:1.8;font-size:15px;}
+.faq-item.open .faq-answer{display:block;}
+
+/* ============================================================
+   CONTACT  light grey
+============================================================ */
+.contact-section{padding:120px 7%;background:#F1F5F9;}
+.contact-container{max-width:1100px;margin:auto;display:grid;grid-template-columns:1fr 1.3fr;gap:80px;align-items:start;}
+.contact-section .section-title{color:var(--blue-dark);}
+.contact-section .section-label{color:var(--accent);}
+.contact-left p{color:#3A5A78;font-size:16px;line-height:1.8;margin-bottom:28px;}
+.contact-left .section-divider{margin:14px 0 28px;}
+.contact-info-item{display:flex;align-items:flex-start;gap:14px;margin-bottom:20px;}
+.contact-icon{width:40px;height:40px;border-radius:8px;background:rgba(14,165,233,0.1);border:1px solid rgba(14,165,233,0.22);display:flex;align-items:center;justify-content:center;color:#0369A1;font-size:16px;flex-shrink:0;}
+.contact-info-text strong{display:block;color:var(--blue-dark);font-size:13px;font-family:var(--mono);letter-spacing:0.5px;margin-bottom:3px;}
+.contact-info-text span{color:#3A5A78;font-size:14px;}
+.contact-form{background:#ffffff;border:1px solid #CBD8E8;border-radius:12px;padding:36px;box-shadow:0 2px 12px rgba(0,0,0,0.04);}
+.form-group{margin-bottom:20px;}
+.form-group label{display:block;color:#0369A1;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;font-family:var(--mono);}
+.form-group input,.form-group textarea,.form-group select{width:100%;background:#F8FAFC;border:1px solid #CBD8E8;border-radius:6px;padding:12px 16px;color:var(--text-dark);font-size:14px;font-family:var(--font);transition:0.3s;outline:none;}
+.form-group input:focus,.form-group textarea:focus,.form-group select:focus{border-color:rgba(14,165,233,0.5);background:#F0F7FF;}
+.form-group input::placeholder,.form-group textarea::placeholder{color:rgba(58,90,120,0.4);}
+.form-group select option{background:#ffffff;color:var(--text-dark);}
+.form-group textarea{height:120px;resize:vertical;}
+.form-submit{width:100%;background:linear-gradient(135deg,#0EA5E9,#0369A1);color:#fff;border:none;padding:14px;border-radius:6px;font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:0.3s;font-family:var(--mono);}
+.form-submit:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(14,165,233,0.35);}
+
+/* ============================================================
+   FOOTER  dark navy
+============================================================ */
+footer{background:#0B1F35;border-top:1px solid rgba(14,165,233,0.15);padding:60px 7% 30px;}
+.footer-grid{max-width:1200px;margin:0 auto 50px;display:grid;grid-template-columns:2fr 1fr 1fr;gap:50px;}
+.footer-brand p{color:rgba(186,224,245,0.75);font-size:14px;line-height:1.8;max-width:360px;margin-top:16px;}
+.logo-wrap{display:flex;align-items:center;gap:10px;}
+.logo-icon-sm{width:30px;height:30px;background:linear-gradient(135deg,#0EA5E9,#0369A1);border-radius:7px;display:flex;align-items:center;justify-content:center;}
+.logo-icon-sm svg{width:18px;height:18px;}
+.logo-text{font-family:var(--serif);font-size:18px;color:#38BDF8;font-weight:700;}
+.logo-text span{color:rgba(255,255,255,0.8);font-weight:400;}
+.footer-col h4{font-family:var(--mono);color:#38BDF8;font-size:10px;letter-spacing:3px;text-transform:uppercase;margin-bottom:16px;}
+.footer-col a{display:block;color:rgba(186,224,245,0.7);text-decoration:none;font-size:14px;margin-bottom:10px;transition:0.3s;cursor:pointer;}
+.footer-col a:hover{color:#38BDF8;}
+.footer-bottom{max-width:1200px;margin:auto;border-top:1px solid rgba(14,165,233,0.1);padding-top:24px;display:flex;justify-content:space-between;align-items:center;}
+.footer-bottom p{color:rgba(186,224,245,0.45);font-size:13px;}
+.footer-bottom span{color:#38BDF8;}
+
+/* ============================================================
+   RESPONSIVE
+============================================================ */
+@media(max-width:1100px){
+  .charts-grid{grid-template-columns:1fr;}
+  .fin-charts-grid{grid-template-columns:1fr;}
+  .kpi-row{grid-template-columns:repeat(2,1fr);}
+}
+@media(max-width:900px){
+  .nav-links,.nav-cta{display:none;}
+  .hamburger{display:flex;}
+  .hero-section{padding:100px 5% 70px;min-height:auto;}
+  .hero-container,.about-container,.contact-container{grid-template-columns:1fr;gap:40px;}
+  .hero-left h1{font-size:34px;}
+  .hero-buttons{flex-wrap:wrap;}
+  .process-grid{grid-template-columns:1fr 1fr;}
+  .platform-grid{grid-template-columns:1fr;}
+  .pricing-grid{grid-template-columns:1fr;}
+  .stats-grid{grid-template-columns:repeat(2,1fr);}
+  .footer-grid{grid-template-columns:1fr;}
+  .footer-bottom{flex-direction:column;gap:8px;text-align:center;}
+  .kpi-row,.fin-kpi-row{grid-template-columns:1fr 1fr;}
+  .section-title{font-size:30px;}
+  .chart-wrap{height:200px;}
+  .chart-wrap-full{height:220px;}
+  .radar-wrap{height:240px;}
+  .market-section,.financial-section,.about-section,.platform-section,
+  .pricing-section,.faq-section,.contact-section,.process-section{padding:80px 5%;}
+  .fin-intro,.market-intro,.platform-sub,.pricing-sub{font-size:15px;margin-bottom:36px;}
+  .hero-card{padding:22px;}
+  .sensitivity-table th,.sensitivity-table td{padding:11px 14px;}
+}
+@media(max-width:600px){
+  .process-grid{grid-template-columns:1fr;}
+  .stats-grid{grid-template-columns:1fr 1fr;}
+  .kpi-row,.fin-kpi-row{grid-template-columns:1fr;}
+  .about-features{grid-template-columns:1fr;}
+  .hero-left h1{font-size:28px;}
+  .section-title{font-size:26px;}
+  .kpi-val{font-size:28px;}
+  .stat-num{font-size:32px;}
+  .chart-wrap{height:180px;}
+  .chart-wrap-full{height:200px;}
+  .fk-val{font-size:26px;}
+  .fin-kpi{padding:18px;}
+  .hero-section{padding:90px 5% 60px;}
+  .market-section,.financial-section,.about-section,.platform-section,
+  .pricing-section,.faq-section,.contact-section,.process-section{padding:60px 5%;}
+  .price-card{padding:24px;}
+  .contact-form{padding:22px;}
+  .founder-box{padding:24px;}
+  .btn-blue,.btn-outline-blue{padding:11px 22px;font-size:11px;}
+}
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     NAVBAR
+============================================================ -->
+<nav class="navbar">
+  <a class="nav-logo" onclick="showPage('home')" style="cursor:pointer;">
+    Zeto Aeroguard</span>
+  </a>
+
+  <ul class="nav-links">
+    <li><button onclick="showPage('home')" id="nav-home" class="active">Home</button></li>
+    <li><button onclick="showPage('about')" id="nav-about">About</button></li>
+    <li><button onclick="showPage('platform')" id="nav-platform">Platform</button></li>
+    <li><button onclick="showPage('market')" id="nav-market">Market</button></li>
+    <li><button onclick="showPage('financials')" id="nav-financials">Financials</button></li>
+    <li><button onclick="showPage('pricing')" id="nav-pricing">Pricing</button></li>
+    <li><button onclick="showPage('contact')" id="nav-contact">Contact</button></li>
+  </ul>
+
+  <div class="nav-cta">
+    <button class="btn-demo-nav" onclick="showPage('contact')">Request Demo</button>
+  </div>
+
+  <button class="hamburger" id="hamburger" aria-label="menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<div class="mobile-nav" id="mobileNav">
+  <button onclick="showPage('home');closeMobile()">Home</button>
+  <button onclick="showPage('about');closeMobile()">About</button>
+  <button onclick="showPage('platform');closeMobile()">Platform</button>
+  <button onclick="showPage('market');closeMobile()">Market Data</button>
+  <button onclick="showPage('financials');closeMobile()">Financials</button>
+  <button onclick="showPage('pricing');closeMobile()">Pricing</button>
+  <button onclick="showPage('contact');closeMobile()">Contact</button>
+</div>
+
+
+<!-- ============================================================
+     PAGE: HOME
+============================================================ -->
+<div class="page active" id="page-home">
+
+  <!-- HERO -->
+  <section class="hero-section">
+    <div class="hero-glow"></div>
+    <div class="hero-grid"></div>
+    <div class="hero-container">
+      <div class="hero-left">
+        <div class="hero-badge">UK Aviation Technology &middot; Prototype Validated · TRL 7</div>
+        <h1>Zeto <span> Aeroguard</span></h1>
+        <div class="hero-divider"></div>
+        <p class="hero-text">
+          The world's first AI-powered Transactional Digital Twin platform for aircraft ownership transfers and lease redeliveries. Zeto  Aeroguard converts fragmented maintenance records into real-time airworthiness intelligence  enabling zero-downtime aircraft transitions, blockchain-backed handovers, and instant cross-border compliance mapping.
+        </p>
+        <div class="hero-buttons">
+          <button class="btn-blue" onclick="showPage('platform')">Explore Platform &rarr;</button>
+          <button class="btn-outline-blue" onclick="showPage('contact')">Request Demo</button>
+        </div>
+      </div>
+      <div class="hero-right">
+        <div class="hero-card">
+          <div class="hero-card-title">Live Platform Performance</div>
+          <div class="hero-stat">
+            <div class="stat-dot"></div>
+            <div class="stat-label">OCR accuracy on handwritten aviation logbooks</div>
+            <div class="stat-val">94%+</div>
+          </div>
+          <div class="hero-stat">
+            <div class="stat-dot em"></div>
+            <div class="stat-label">Reduction in manual audit hours per transition</div>
+            <div class="stat-val">70%</div>
+          </div>
+          <div class="hero-stat">
+            <div class="stat-dot"></div>
+            <div class="stat-label">Non-compliance detection precision</div>
+            <div class="stat-val">98%</div>
+          </div>
+          <div class="hero-stat">
+            <div class="stat-dot em"></div>
+            <div class="stat-label">Reduction in transition audit costs</div>
+            <div class="stat-val">50%</div>
+          </div>
+          <div class="hero-stat">
+            <div class="stat-dot"></div>
+            <div class="stat-label">Record retrieval speed</div>
+            <div class="stat-val">&lt;200ms</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MARKET STRIP -->
+  <section class="market-strip">
+    <div class="stats-grid">
+      <div class="stat-item">
+        <span class="stat-num">$170B+</span>
+        <div class="stat-desc">Global aircraft leasing market  Zeto  Aeroguard targets the transition intelligence layer that protects billions in asset value</div>
+      </div>
+      <div class="stat-item">
+        <span class="stat-num">25,000+</span>
+        <div class="stat-desc">Commercial aircraft globally requiring periodic lease returns and ownership transfers  all potential Zeto  Aeroguard clients</div>
+      </div>
+      <div class="stat-item">
+        <span class="stat-num">£2.7M</span>
+        <div class="stat-desc">Maximum revenue lost per aircraft in a standard 60-day audit delay at £15,000£45,000 per day</div>
+      </div>
+      <div class="stat-item">
+        <span class="stat-num">£57.75M</span>
+        <div class="stat-desc">Total addressable market annually across all five target sectors in Zeto  Aeroguard's initial SaaS phase</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section class="process-section">
+    <div class="process-container">
+      <div class="section-label">How It Works</div>
+      <h2 class="section-title">From Record Chaos to Airworthiness Clarity in Real Time</h2>
+      <div class="section-divider"></div>
+      <p class="process-sub">Every aircraft transition processed by Zeto  Aeroguard follows a proven four-stage intelligence journey  from ingesting fragmented legacy documentation and building a live Transactional Digital Twin, to generating compliance gap reports and delivering blockchain-backed handover sign-offs with full audit traceability.</p>
+      <div class="process-grid">
+        <div class="process-card">
+          <img src="zz1.png" class="process-card-img" alt="Aircraft maintenance records and technical documentation scanning">
+          <div class="step-badge">STEP 01</div>
+          <h3>Ingest &amp; Digitise Records</h3>
+          <p>Zeto  Aeroguard's AI-powered OCR engine processes thousands of pages of handwritten maintenance logs, engineering orders, and certification forms  extracting critical data with 94% accuracy using LayoutLM and Transformer models trained on aviation-specific documentation.</p>
+        </div>
+        <div class="process-card">
+          <img src="zz2.png" class="process-card-img" alt="Commercial aircraft in flight representing digital twin modelling">
+          <div class="step-badge">STEP 02</div>
+          <h3>Build the Digital Twin</h3>
+          <p>A living Transactional Digital Twin of the aircraft is constructed in real time  mapping every maintenance event, component swap, and structural repair against specific lease redelivery conditions and financial liability thresholds, identifying compliance gaps months before transition.</p>
+        </div>
+        <div class="process-card">
+          <img src="zz3.png" class="process-card-img" alt="Aviation compliance and regulatory documentation review">
+          <div class="step-badge">STEP 03</div>
+          <h3>Compliance Gap Analysis</h3>
+          <p>The Regulatory Friction Index (RFI) module automatically compares the aircraft's current configuration against the target registry's requirements  UK CAA, EASA, or FAA  predicting the exact cost and time needed to achieve full compliance before transition.</p>
+        </div>
+        <div class="process-card">
+          <img src="zz4.png" class="process-card-img" alt="Digital handover and blockchain sign-off for aviation assets">
+          <div class="step-badge">STEP 04</div>
+          <h3>Blockchain Handover &amp; Sign-Off</h3>
+          <p>All document verifications and technical sign-offs are recorded on a private blockchain ledger  creating an immutable chain of evidence that eliminates "missing record" disputes and provides complete certainty to all parties throughout the handover process.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div><!-- /page-home -->
+
+
+<!-- ============================================================
+     PAGE: ABOUT
+============================================================ -->
+<div class="page" id="page-about">
+  <section class="about-section" style="min-height:100vh;">
+    <div class="about-container">
+      <div class="about-left">
+        <div class="section-label">About Zeto  Aeroguard</div>
+        <h2 class="section-title">The UK's First AI-Powered Aviation Asset Transition Platform</h2>
+        <div class="section-divider"></div>
+        <p>Zeto  Aeroguard is a UK-based aviation technology company pioneering the world's first Transactional Digital Twin platform for aircraft ownership transfers and lease redeliveries. Built on a foundation of deep operational aviation expertise, the platform addresses the systemic "Efficiency and Liquidity Crisis" that costs the global aviation industry billions of pounds annually through aircraft transition downtime.</p>
+        <p>The platform combines advanced computer vision (LayoutLM), natural language processing (NLP), and blockchain technology to convert fragmented maintenance records into real-time airworthiness and financial liability models  enabling lessors, airlines, and MROs to achieve zero-downtime aircraft transitions with full regulatory compliance.</p>
+        <p>Zeto  Aeroguard is fully aligned with the UK Civil Aviation Authority's push for Digital Technical Records (CAP 1330) and has achieved Technology Readiness Level 7, with a functional prototype validated in a real-world MRO hangar environment at a major UK airport.</p>
+        <div class="about-features">
+          <div class="feature-tag">AI OCR Engine (94% Accuracy)</div>
+          <div class="feature-tag">Transactional Digital Twin</div>
+          <div class="feature-tag">Regulatory Friction Index</div>
+          <div class="feature-tag">Blockchain Handover Ledger</div>
+          <div class="feature-tag">UK CAA CAP 1330 Compliant</div>
+          <div class="feature-tag">ISO 27001 Aligned</div>
+        </div>
+      </div>
+      <div class="founder-box">
+        <div class="founder-box-title">Founder &amp; CEO</div>
+        <div class="founder-box-div"></div>
+        <p><strong>Ronak Mistry</strong> brings over 9.5 years of meticulous, hands-on experience in aircraft airworthiness activities and technical documentation management at Tier-1 MRO organisations including Lufthansa Technik and Virgin Atlantic.</p>
+        <p>His deep domain expertise in performing audits of delivery documentation for airframes, engines, and landing gears  combined with direct experience managing high-pressure lease returns  is the operational intelligence that powers Zeto  Aeroguard's proprietary "Asset Stability Score" and "Regulatory Friction Index" algorithms.</p>
+        <p>Ronak's <strong>"on-the-wing"</strong> engineering experience ensures that the platform's AI models understand the practical nuances of structural repairs, engine module swaps, and Back-to-Birth (BTB) trace verification that no generic AI platform can replicate.</p>
+        <a onclick="showPage('contact')" class="contact-btn" style="cursor:pointer;">Contact Ronak &rarr;</a>
+      </div>
+    </div>
+  </section>
+</div>
+
+
+<!-- ============================================================
+     PAGE: PLATFORM
+============================================================ -->
+<div class="page" id="page-platform">
+  <section class="platform-section" style="min-height:100vh;">
+    <div class="platform-container">
+      <div class="section-label">Our Solutions</div>
+      <h2 class="section-title">Six Integrated Platform Modules</h2>
+      <div class="section-divider"></div>
+      <p class="platform-sub">Zeto  Aeroguard delivers a fully integrated aviation asset intelligence ecosystem  AI document extraction, compliance mapping, risk scoring, blockchain trust, scenario simulation, and hangar-side edge processing  designed to eliminate fragmented transitions and make aircraft handovers predictable, transparent, and instantaneous.</p>
+      <div class="platform-grid">
+
+        <div class="platform-card" id="card-a">
+          <img src="zz5.png" class="platform-card-img" alt="AI document scanning and OCR processing of aviation technical records">
+          <div class="inner">
+            <div class="element-badge">AI Core</div>
+            <h3>AI Technical Records Engine</h3>
+            <p class="short-text">OCR and NLP models extract critical data from legacy handwritten aviation logbooks and maintenance release certificates with 94% accuracy.</p>
+            <p class="more-text">Built using optimised LayoutLM and DenseNet architectures fine-tuned on aviation-specific "dirty fingerprint" handwritten records. The engine processes up to 50,000 pages per aircraft, verifying Back-to-Birth (BTB) traces for Life-Limited Parts (LLPs), structural repair maps, and AD/SB compliance  a core barrier to entry for any competitor.</p>
+            <button class="learn-btn" onclick="toggleCard('card-a',this)">Learn More</button>
+          </div>
+        </div>
+
+        <div class="platform-card" id="card-b">
+          <img src="zz66.png" class="platform-card-img" alt="Commercial aircraft representing the Transactional Digital Twin concept">
+          <div class="inner">
+            <div class="element-badge">Core AI</div>
+            <h3>Transactional Digital Twin Engine</h3>
+            <p class="short-text">A living virtual replica of the aircraft's technical and legal status, mapping every maintenance event against real-time lease redelivery conditions.</p>
+            <p class="more-text">The Transactional Digital Twin Engine interprets every maintenance event, component swap, and structural repair as linguistic and financial data  mapped in real time against specific lease redelivery conditions. Using CNN and Transformer-based networks, it identifies airworthiness compliance issues months before an asset is grounded for audit, converting passive records into active financial intelligence.</p>
+            <button class="learn-btn" onclick="toggleCard('card-b',this)">Learn More</button>
+          </div>
+        </div>
+
+        <div class="platform-card" id="card-c">
+          <img src="zz7.png" class="platform-card-img" alt="Aviation compliance regulatory mapping across international registries">
+          <div class="inner">
+            <div class="element-badge">Compliance</div>
+            <h3>Regulatory Friction Index (RFI)</h3>
+            <p class="short-text">An automated compliance mapper that predicts the time and cost required to migrate an aircraft between global registries  UK CAA, EASA, and FAA.</p>
+            <p class="more-text">The RFI module compares the aircraft's current configuration against the requirements of the importing regulatory authority, computing a gap-analysis score across Airworthiness Directives, modifications, and certification status. It generates instant "Time-to-Registry" projections, enabling owners to resolve gaps while the aircraft still generates revenue  eliminating costly last-minute discoveries that derail sales agreements.</p>
+            <button class="learn-btn" onclick="toggleCard('card-c',this)">Learn More</button>
+          </div>
+        </div>
+
+        <div class="platform-card" id="card-d">
+          <img src="zz8.png" class="platform-card-img" alt="Blockchain technology providing immutable audit trails for aviation handovers">
+          <div class="inner">
+            <div class="element-badge">Trust Layer</div>
+            <h3>Blockchain Handover Ledger</h3>
+            <p class="short-text">A private blockchain records every document upload, verification, and technical sign-off  creating an immutable chain of evidence for all parties.</p>
+            <p class="more-text">Zeto  Aeroguard's blockchain ledger records every document upload, verification step, and technical sign-off with a tamper-proof timestamp. This creates an immutable "chain of evidence" that eliminates "missing record" disputes that plague traditional aircraft transitions. The ledger is GDPR-compliant, ISO 27001-aligned, and specifically engineered for the high-stakes legal environment of aircraft ownership migration.</p>
+            <button class="learn-btn" onclick="toggleCard('card-d',this)">Learn More</button>
+          </div>
+        </div>
+
+        <div class="platform-card" id="card-e">
+          <img src="zz9.png" class="platform-card-img" alt="Aircraft asset valuation and risk scoring for aviation financiers">
+          <div class="inner">
+            <div class="element-badge">Risk Intelligence</div>
+            <h3>Asset Stability Score</h3>
+            <p class="short-text">The industry's first quantitative metric for documentation quality  allowing lessors and financiers to price risk objectively rather than via qualitative spot-checks.</p>
+            <p class="more-text">The "Asset Stability Score" analyses the lineage and certification (Form 1/8130) of every major structural repair, assigning an objective, defensible measure of technical integrity. This score directly influences the asset's market valuation, insurance premiums, and resale potential  providing financiers and insurers with the first data-driven basis for asset-backed securitisation pricing in aviation.</p>
+            <button class="learn-btn" onclick="toggleCard('card-e',this)">Learn More</button>
+          </div>
+        </div>
+
+        <div class="platform-card" id="card-f">
+          <img src="zz10.png" class="platform-card-img" alt="MRO hangar edge computing for real-time aviation record processing">
+          <div class="inner">
+            <div class="element-badge">Edge Hardware</div>
+            <h3>Hangar Edge Hub</h3>
+            <p class="short-text">Pre-configured onsite hardware units deploying AI inference locally in secure, low-connectivity hangar environments  ensuring data sovereignty at the point of maintenance.</p>
+            <p class="more-text">Unlike cloud-only systems that require sensitive records to be exported to external servers, Zeto  Aeroguard's Hangar Edge Hubs process high-volume technical records locally using NVIDIA Jetson Orin edge processors. This ensures 100% data sovereignty and 24/7 operational capability even in low-connectivity hangar environments, integrating seamlessly with AMOS and TRAX via RESTful APIs.</p>
+            <button class="learn-btn" onclick="toggleCard('card-f',this)">Learn More</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+</div>
+
+
+<!-- ============================================================
+     PAGE: MARKET DATA
+============================================================ -->
+<div class="page" id="page-market">
+  <section class="market-section" style="min-height:100vh;">
+    <div class="market-container">
+      <div class="section-label">Market Intelligence</div>
+      <h2 class="section-title">Global Aviation Market Opportunity</h2>
+      <div class="section-divider"></div>
+      <p class="market-intro">Zeto  Aeroguard operates at the heart of the global aviation leasing market  a USD 170 billion+ industry facing an acute "Efficiency and Liquidity Crisis" driven by fragmented records, MRO capacity shortages, and the increasing complexity of new-generation engine transitions. The data below reflects the total addressable market and the competitive landscape where Zeto  Aeroguard is uniquely positioned to lead.</p>
+
+      <!-- KPIs -->
+      <div class="kpi-row">
+        <div class="kpi-card">
+          <span class="kpi-val">$170B+</span>
+          <div class="kpi-label">Global Leasing Market 2023</div>
+        </div>
+        <div class="kpi-card">
+          <span class="kpi-val">15%+</span>
+          <div class="kpi-label">AI Asset Intelligence CAGR</div>
+        </div>
+        <div class="kpi-card">
+          <span class="kpi-val">£57.75M</span>
+          <div class="kpi-label">Zeto  Aeroguard TAM (Annual)</div>
+        </div>
+        <div class="kpi-card">
+          <span class="kpi-val">25,000+</span>
+          <div class="kpi-label">Aircraft Requiring Transitions</div>
+        </div>
+      </div>
+
+      <!-- CHARTS ROW 1 -->
+      <div class="charts-grid">
+        <div class="chart-card">
+          <div class="chart-title">Global Aircraft Leasing Market</div>
+          <div class="chart-subtitle">USD Billion · 20232030 · CAGR ~6%</div>
+          <div class="chart-wrap"><canvas id="chartLeasing"></canvas></div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-title">AI Aviation Intelligence Market</div>
+          <div class="chart-subtitle">USD Billion · 20242031 · CAGR 15%+</div>
+          <div class="chart-wrap"><canvas id="chartAI"></canvas></div>
+        </div>
+      </div>
+
+      <!-- CHARTS ROW 2 -->
+      <div class="charts-grid">
+        <div class="chart-card">
+          <div class="chart-title">Zeto  Aeroguard TAM by Sector</div>
+          <div class="chart-subtitle">Annual TAM £M · Across all five target verticals</div>
+          <div class="chart-wrap"><canvas id="chartTAM"></canvas></div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-title">Competitive Positioning</div>
+          <div class="chart-subtitle">Zeto  Aeroguard vs Competitors · Feature Depth Score (15)</div>
+          <div class="radar-wrap"><canvas id="chartRadar"></canvas></div>
+        </div>
+      </div>
+
+      <!-- FULL WIDTH: MRO Market -->
+      <div class="chart-card-full">
+        <div class="chart-title">Global MRO Market Growth</div>
+        <div class="chart-subtitle">USD Billion · 20242031 · Source: Aviation Week Intelligence</div>
+        <div class="chart-wrap-full"><canvas id="chartMRO"></canvas></div>
+      </div>
+
+      <!-- FULL WIDTH: Zeto vs Traditional -->
+      <div class="chart-card-full">
+        <div class="chart-title">Zeto  Aeroguard vs. Manual Audit Process  Performance Comparison</div>
+        <div class="chart-subtitle">Indexed comparison across six key operational metrics (higher = better)</div>
+        <div class="chart-wrap-full"><canvas id="chartPerf"></canvas></div>
+      </div>
+
+    </div>
+  </section>
+</div>
+
+
+<!-- ============================================================
+     PAGE: FINANCIALS
+============================================================ -->
+<div class="page" id="page-financials">
+  <section class="financial-section" style="min-height:100vh;">
+    <div class="financial-container">
+      <div class="section-label">Financial Projections</div>
+      <h2 class="section-title">5-Year Revenue Model &amp; Financial Analysis</h2>
+      <div class="section-divider"></div>
+      <p class="fin-intro">Zeto  Aeroguard operates under a high-margin B2B SaaS and per-event "Transactional Audit Pack" model. With gross margins exceeding 99%, the platform achieves self-sustainability within its first year. Revenue scales from £75,290 in Year 1 through pilot operations, reaching £3,030,402 by Year 5 as the platform expands globally across lessors, airlines, and MRO facilities.</p>
+
+      <!-- KPI Cards -->
+      <div class="fin-kpi-row">
+        <div class="fin-kpi">
+          <div class="fk-label">Year 1 Revenue</div>
+          <div class="fk-val">£75,290</div>
+          <div class="fk-sub">Pilot transitions · UK regional lessors · First institutional clients onboarded</div>
+        </div>
+        <div class="fin-kpi">
+          <div class="fk-label">Year 3 Revenue</div>
+          <div class="fk-val">£1.06M</div>
+          <div class="fk-sub">16-person team · Dublin expansion · Wide-body &amp; engine module launch</div>
+        </div>
+        <div class="fin-kpi">
+          <div class="fk-label">Year 5 Revenue</div>
+          <div class="fk-val">£3.03M</div>
+          <div class="fk-sub">38-person team · 155 active clients · 99.65% gross margin · Global reach</div>
+        </div>
+      </div>
+
+      <!-- Revenue breakdown + EBITDA -->
+      <div class="fin-charts-grid">
+        <div class="chart-card">
+          <div class="chart-title">Revenue by Stream</div>
+          <div class="chart-subtitle">£ · Year 1 to Year 5 · Stacked by category</div>
+          <div class="chart-wrap"><canvas id="chartRevStream"></canvas></div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-title">EBITDA vs. Net Profit</div>
+          <div class="chart-subtitle">£ · EBITDA and Net Profit across 5-year forecast</div>
+          <div class="chart-wrap"><canvas id="chartMargin"></canvas></div>
+        </div>
+      </div>
+
+      <!-- Cash Flow full width -->
+      <div class="chart-card-full">
+        <div class="chart-title">Monthly Cash Flow  Year 1</div>
+        <div class="chart-subtitle">£ Net cash flow per month with cumulative closing balance</div>
+        <div class="chart-wrap-full"><canvas id="chartCashflow"></canvas></div>
+      </div>
+
+      <!-- Sensitivity -->
+      <div class="chart-card-full">
+        <div class="chart-title">Sensitivity Analysis  Year 2 Downside Scenarios</div>
+        <div class="chart-subtitle">Net profit resilience across four stress scenarios</div>
+        <div class="chart-wrap-full" style="height:200px;"><canvas id="chartSensitivity"></canvas></div>
+      </div>
+
+      <!-- Sensitivity Table -->
+      <div class="chart-card-full" style="margin-top:0;">
+        <div class="chart-title" style="margin-bottom:16px;">Sensitivity Summary Table  Year 2 Projections</div>
+        <div class="sensitivity-table-wrap">
+        <table class="sensitivity-table">
+          <thead>
+            <tr>
+              <th>Scenario</th>
+              <th>Revenue (£)</th>
+              <th>Net Profit (£)</th>
+              <th>Net Margin</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="base">
+              <td>📊 Base Case</td>
+              <td data-label="Revenue (£)">263,513</td>
+              <td data-label="Net Profit (£)">66,533</td>
+              <td data-label="Net Margin">25.25%</td>
+              <td data-label="Status"><span class="pill-blue">✓ Base</span></td>
+            </tr>
+            <tr>
+              <td>⬇ Slower Client Adoption (−15%)</td>
+              <td data-label="Revenue (£)">224,000</td>
+              <td data-label="Net Profit (£)">38,000</td>
+              <td data-label="Net Margin">17.0%</td>
+              <td data-label="Status"><span class="pill-blue">✓ Profitable</span></td>
+            </tr>
+            <tr>
+              <td>⬇ Lower Audit Pack Revenue (−20%)</td>
+              <td data-label="Revenue (£)">245,000</td>
+              <td data-label="Net Profit (£)">48,000</td>
+              <td data-label="Net Margin">19.6%</td>
+              <td data-label="Status"><span class="pill-blue">✓ Profitable</span></td>
+            </tr>
+            <tr>
+              <td>⬆ Higher Cloud Infrastructure Costs (+10%)</td>
+              <td data-label="Revenue (£)">263,513</td>
+              <td data-label="Net Profit (£)">58,000</td>
+              <td data-label="Net Margin">22.0%</td>
+              <td data-label="Status"><span class="pill-blue">✓ Profitable</span></td>
+            </tr>
+            <tr>
+              <td>⬆ Higher Payroll &amp; Operating Costs (+10%)</td>
+              <td data-label="Revenue (£)">263,513</td>
+              <td data-label="Net Profit (£)">45,000</td>
+              <td data-label="Net Margin">17.1%</td>
+              <td data-label="Status"><span class="pill-blue">✓ Profitable</span></td>
+            </tr>
+          </tbody>
+        </table>
+        </div>
+        <p style="margin-top:12px;font-family:var(--mono);font-size:10px;color:rgba(58,90,120,0.5);letter-spacing:1px;">ALL SCENARIOS REMAIN PROFITABLE · YEAR 2 DOWNSIDE STRESS TESTS · ZETO  AEROGUARD</p>
+      </div>
+
+    </div>
+  </section>
+</div>
+
+
+<!-- ============================================================
+     PAGE: PRICING
+============================================================ -->
+<div class="page" id="page-pricing">
+  <section class="pricing-section" style="min-height:100vh;">
+    <div class="pricing-container">
+      <div class="section-label">Revenue Packages</div>
+      <h2 class="section-title">Scalable Plans for Every Aviation Institution</h2>
+      <div class="section-divider"></div>
+      <p class="pricing-sub">Whether you are a regional airline looking to streamline your first lease return or a global Tier-1 lessor managing hundreds of aircraft  Zeto  Aeroguard has a package aligned to your operational scale, compliance requirements, and transition volume.</p>
+      <div class="pricing-grid">
+        <div class="price-card">
+          <div class="price-tag">Basic Tier</div>
+          <h3>Regional Operators</h3>
+          <p>Ideal for regional airlines, smaller Continuing Airworthiness Management Organisations (CAMOs), and independent operators beginning their digital airworthiness journey.</p>
+          <span class="price-amount">£1,012</span>
+          <div class="price-unit">per month · up to 5 assets monitored</div>
+          <ul class="price-features">
+            <li><span class="check">✓</span> Real-time transition monitoring dashboard</li>
+            <li><span class="check">✓</span> Basic Regulatory Friction Index (RFI) mapping</li>
+            <li><span class="check">✓</span> Document health dashboards</li>
+            <li><span class="check">✓</span> UK CAA CAP 1330 compliance alignment</li>
+            <li><span class="check">✓</span> Standard support &amp; onboarding</li>
+          </ul>
+          <button onclick="showPage('contact')" class="price-btn price-btn-outline">Get Started &rarr;</button>
+        </div>
+        <div class="price-card featured">
+          <div class="price-tag">Professional Tier</div>
+          <h3>Mid-Tier Lessors</h3>
+          <p>For mid-tier lessors and commercial airlines managing up to 25 assets, requiring full API integration, automated back-to-birth tracing, and structural repair provenance mapping.</p>
+          <span class="price-amount">£2,835</span>
+          <div class="price-unit">per month · up to 25 assets · API included</div>
+          <ul class="price-features">
+            <li><span class="check">✓</span> Everything in Basic, plus:</li>
+            <li><span class="check">✓</span> Full API integration with AMOS / TRAX</li>
+            <li><span class="check">✓</span> Automated Back-to-Birth (BTB) audit</li>
+            <li><span class="check">✓</span> Structural repair provenance mapping</li>
+            <li><span class="check">✓</span> Predictive findings engine (612 months ahead)</li>
+            <li><span class="check">✓</span> Multi-registry RFI mapping (CAA / EASA / FAA)</li>
+            <li><span class="check">✓</span> Blockchain handover ledger access</li>
+          </ul>
+          <button onclick="showPage('contact')" class="price-btn price-btn-blue">Request Demo &rarr;</button>
+        </div>
+        <div class="price-card">
+          <div class="price-tag">Enterprise Tier</div>
+          <h3>Global Lessors &amp; Flag Carriers</h3>
+          <p>For Tier-1 global lessors and flag carriers requiring full portfolio-level digital twin integration, unlimited asset monitoring, and dedicated technical support around the clock.</p>
+          <span class="price-amount">Custom</span>
+          <div class="price-unit">bespoke pricing · avg. £12,150+/month</div>
+          <ul class="price-features">
+            <li><span class="check">✓</span> Everything in Professional, plus:</li>
+            <li><span class="check">✓</span> Unlimited asset portfolio monitoring</li>
+            <li><span class="check">✓</span> Multi-jurisdictional RFI mapping (APAC / US)</li>
+            <li><span class="check">✓</span> Hangar Edge Hub hardware deployment</li>
+            <li><span class="check">✓</span> Portfolio risk analytics &amp; valuation SDK</li>
+            <li><span class="check">✓</span> 24/7 dedicated technical support team</li>
+          </ul>
+          <button onclick="showPage('contact')" class="price-btn price-btn-outline">Enquire Now &rarr;</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="faq-section">
+    <div class="faq-container">
+      <div class="faq-header">
+        <div class="section-label">FAQ</div>
+        <h2 class="section-title">Common Questions</h2>
+        <div class="section-divider"></div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          <h4>What aircraft types does Zeto  Aeroguard currently support?</h4><span class="faq-icon">+</span>
+        </div>
+        <div class="faq-answer">The current prototype is validated for narrow-body commercial aircraft (Airbus A320/A321 family and Boeing 737 family), which represent the highest volume of global aircraft transitions. Year 2 development will expand the platform to wide-body aircraft (Airbus A350, Boeing 787) and high-value engine portfolios (CFM LEAP, Pratt &amp; Whitney GTF, Rolls-Royce Trent). The modular AI architecture allows rapid adaptation across new asset classes, including business jets and helicopters.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          <h4>How does Zeto  Aeroguard achieve 94% OCR accuracy on handwritten records?</h4><span class="faq-icon">+</span>
+        </div>
+        <div class="faq-answer">Unlike generic OCR tools, our AI engine is purpose-built for aviation technical documentation. We use LayoutLM and DenseNet architectures fine-tuned on thousands of "dirty fingerprint" handwritten maintenance logs, engineering orders, and certification forms specific to commercial aviation. The models understand aviation-specific vocabulary, abbreviations, part numbers, and structural repair notation  context that generic OCR tools entirely miss. Continuous learning from new data ensures the models improve with every transition processed.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          <h4>Is Zeto  Aeroguard compliant with UK CAA CAP 1330 digital record standards?</h4><span class="faq-icon">+</span>
+        </div>
+        <div class="faq-answer">Yes. The platform is specifically engineered to align with the UK Civil Aviation Authority's CAP 1330 Digital Technical Records framework, as well as EASA Part-CAMO record-keeping requirements and ATA Spec 2500 (Aircraft Transfer Records). The system is also GDPR-compliant, ISO 27001-aligned, and working towards Cyber Essentials Plus certification. All data is processed in UK-based cloud environments (Microsoft Azure UK South or AWS London) to maintain full data sovereignty.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          <h4>What return on investment can a lessor expect from using Zeto  Aeroguard?</h4><span class="faq-icon">+</span>
+        </div>
+        <div class="faq-answer">The financial case is compelling. A standard 60-day aircraft transition audit delay represents a direct loss of up to £2.7 million in foregone revenue (at £15,000£45,000 per day). Zeto  Aeroguard reduces manual audit hours by 70% and transition audit costs by up to 50%, enabling aircraft to return to revenue-generating service weeks faster. For a Tier-1 lessor managing 20 aircraft transitions per year, the platform typically delivers annual savings many times greater than the subscription cost.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          <h4>How does the blockchain ledger work for multi-party handovers?</h4><span class="faq-icon">+</span>
+        </div>
+        <div class="faq-answer">Zeto  Aeroguard uses a private blockchain ledger  not a public cryptocurrency network  to record every document upload, verification step, and technical sign-off during an aircraft handover. Each action is time-stamped and cryptographically signed by the relevant authorised party (lessor, lessee, CAMO, or MRO). This creates an immutable chain of evidence that all parties can independently verify, eliminating the "missing record" disputes that frequently result in multimillion-pound legal claims during adversarial aircraft redeliveries.</div>
+      </div>
+    </div>
+  </section>
+</div>
+
+
+<!-- ============================================================
+     PAGE: CONTACT
+============================================================ -->
+<div class="page" id="page-contact">
+  <section class="contact-section" style="min-height:100vh;">
+    <div class="contact-container">
+      <div class="contact-left">
+        <div class="section-label">Get In Touch</div>
+        <h2 class="section-title">Request a Demo or Discuss Your Transition Requirements</h2>
+        <div class="section-divider"></div>
+        <p>Whether you are an aircraft lessor, airline technical team, MRO facility, aviation financier, or potential investor  we would love to hear from you and explore how Zeto  Aeroguard can transform your aircraft transition operations.</p>
+        <div class="contact-info-item">
+          <div class="contact-icon">✉</div>
+          <div class="contact-info-text"><strong>Email</strong><span>zatoaeroguarduk@outlook.com</span></div>
+        </div>
+        <div class="contact-info-item">
+          <div class="contact-icon">☎</div>
+          <div class="contact-info-text"><strong>Phone</strong><span>+44 7424 971467 </span></div>
+        </div>
+        <div class="contact-info-item">
+          <div class="contact-icon">⚑</div>
+          <div class="contact-info-text"><strong>Headquarters</strong><span>United Kingdom</span></div>
+        </div>
+        <div class="contact-info-item">
+          <div class="contact-icon">◈</div>
+          <div class="contact-info-text"><strong>Markets Served</strong><span>UK &amp; EU · APAC Expansion Year 3 · US &amp; Singapore Year 4</span></div>
+        </div>
+      </div>
+      <div class="contact-right">
+        <form class="contact-form" action="https://api.web3forms.com/submit" method="POST">
+          <input type="hidden" name="access_key" value="570a09ae-0c65-4f53-a357-43e8786aaf1f">
+          <input type="hidden" name="subject" value="New Zeto  Aeroguard Enquiry">
+          <div class="form-group"><label>Full Name</label><input type="text" name="name" placeholder="Your full name" required></div>
+          <div class="form-group"><label>Email Address</label><input type="email" name="email" placeholder="your@email.com" required></div>
+          <div class="form-group"><label>Organisation / Company</label><input type="text" name="organisation" placeholder="Lessor, airline, MRO, or firm name" required></div>
+          <div class="form-group">
+            <label>I am interested in&hellip;</label>
+            <select name="service" required>
+              <option value="">Select your interest</option>
+              <option>Platform Demo  Transactional Digital Twin</option>
+              <option>Transition Readiness Audit (Pilot)</option>
+              <option>Enterprise SaaS Licensing</option>
+              <option>Transactional Audit Pack  Narrow-Body Aircraft</option>
+              <option>Transactional Audit Pack  Wide-Body / Engine</option>
+              <option>Hangar Edge Hub Deployment</option>
+              <option>API / SDK Licensing &amp; Integration</option>
+              <option>Investor / Partnership Enquiry</option>
+              <option>General Enquiry</option>
+            </select>
+          </div>
+          <div class="form-group"><label>Message</label><textarea name="message" placeholder="Tell us about your fleet, transition volumes, regulatory requirements, or investment interest…" required></textarea></div>
+          <button class="form-submit" type="submit">Send Enquiry &rarr;</button>
+        </form>
+      </div>
+    </div>
+  </section>
+</div>
+
+
+<!-- FOOTER -->
+<footer id="siteFooter">
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <div class="logo-wrap">
+        <span class="logo-text">
+          Zeto<span> Aeroguard</span>
+        </span>
+      </div>
+
+      <p>
+        The world's first AI-powered Transactional Digital Twin platform for aircraft handovers delivering real-time airworthiness intelligence, blockchain-backed trust, and zero-downtime transitions for global lessors, airlines, and MRO facilities across the UK and beyond.
+      </p>
+    </div>
+
+    <div class="footer-col">
+      <h4>Platform</h4>
+      <a onclick="showPage('platform')">AI Records Engine</a>
+      <a onclick="showPage('platform')">Digital Twin Engine</a>
+      <a onclick="showPage('platform')">Regulatory Friction Index</a>
+      <a onclick="showPage('pricing')">Pricing</a>
+    </div>
+
+    <div class="footer-col">
+      <h4>Company</h4>
+      <a onclick="showPage('about')">About Zeto Aeroguard</a>
+      <a onclick="showPage('market')">Market Data</a>
+      <a onclick="showPage('financials')">Financials</a>
+      <a onclick="showPage('contact')">Contact</a>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <p>&copy; 2026 <span>Zeto Aeroguard</span>. All rights reserved. UK Aviation Technology.</p>
+    <p>Founder &amp; CEO <span>Ronak Mistry</span> &middot; Transition. Diversify. Grow.</p>
+  </div>
+</footer>
+
+
+<! ============================================================
+     SCRIPTS
+============================================================ >
+<script>
+/* --- PAGE NAV ---- */
+const pages = ['home','about','platform','market','financials','pricing','contact'];
+let chartsInitialised = {};
+
+function showPage(name) {
+  pages.forEach(p => {
+    const el = document.getElementById('page-'+p);
+    const btn = document.getElementById('nav-'+p);
+    if(el) el.classList.toggle('active', p===name);
+    if(btn) btn.classList.toggle('active', p===name);
+  });
+  window.scrollTo({top:0,behavior:'smooth'});
+  if(name==='market' && !chartsInitialised.market){ initMarketCharts(); chartsInitialised.market=true; }
+  if(name==='financials' && !chartsInitialised.financials){ initFinancialCharts(); chartsInitialised.financials=true; }
+}
+
+/* ---- MOBILE NAV ---- */
+const hamburger = document.getElementById('hamburger');
+const mobileNav = document.getElementById('mobileNav');
+hamburger.addEventListener('click', () => { mobileNav.classList.toggle('open'); });
+function closeMobile(){ mobileNav.classList.remove('open'); }
+
+/* ---- CARD TOGGLE ---- */
+function toggleCard(id, btn) {
+  const card = document.getElementById(id);
+  const isOpen = card.classList.contains('open');
+  document.querySelectorAll('.platform-card').forEach(c=>{
+    c.classList.remove('open');
+    const b = c.querySelector('.learn-btn');
+    if(b) b.textContent='Learn More';
+  });
+  if(!isOpen){ card.classList.add('open'); btn.textContent='Show Less'; }
+}
+
+/* ---- FAQ ---- */
+function toggleFaq(el){
+  const item = el.parentElement;
+  const wasOpen = item.classList.contains('open');
+  document.querySelectorAll('.faq-item').forEach(i=>i.classList.remove('open'));
+  if(!wasOpen) item.classList.add('open');
+}
+
+/* ============================================================
+   CHART COLOURS  light-mode friendly
+============================================================ */
+const C1='rgba(14,165,233,0.82)';
+const C2='rgba(2,132,199,0.75)';
+const C3='rgba(245,158,11,0.78)';
+const C4='rgba(14,165,233,0.38)';
+const GRID='rgba(14,165,233,0.1)';
+const MUTED='#3A5A78';
+
+/* ============================================================
+   MARKET CHARTS
+============================================================ */
+function initMarketCharts(){
+
+  /* 1 Global Aircraft Leasing Market */
+  new Chart(document.getElementById('chartLeasing').getContext('2d'), {
+    type:'bar',
+    data:{
+      labels:['2023','2024','2025','2026','2027','2028','2029','2030'],
+      datasets:[
+        {label:'Narrow-Body',data:[72,76,81,86,91,97,103,109],backgroundColor:'rgba(14,165,233,0.75)',borderRadius:4},
+        {label:'Wide-Body',data:[55,58,62,66,70,75,80,85],backgroundColor:'rgba(2,132,199,0.55)',borderRadius:4},
+        {label:'Freighter',data:[43,46,49,52,55,59,63,67],backgroundColor:'rgba(245,158,11,0.5)',borderRadius:4}
+      ]
+    },
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{boxWidth:10,padding:14,color:MUTED}}},scales:{x:{stacked:true,grid:{color:GRID},ticks:{color:MUTED}},y:{stacked:true,grid:{color:GRID},ticks:{callback:v=>'$'+v+'B',color:MUTED}}}}
+  });
+
+  /* 2 AI Aviation Intelligence */
+  new Chart(document.getElementById('chartAI').getContext('2d'), {
+    type:'line',
+    data:{
+      labels:['2024','2025','2026','2027','2028','2029','2030','2031'],
+      datasets:[{
+        label:'Market Size (USD Bn)',
+        data:[1.8,2.1,2.4,2.8,3.3,3.8,4.4,5.1],
+        borderColor:'#0EA5E9',borderWidth:2.5,fill:true,
+        backgroundColor:'rgba(14,165,233,0.08)',tension:0.4,
+        pointBackgroundColor:'#0EA5E9',pointRadius:4,pointHoverRadius:7
+      }]
+    },
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{color:GRID},ticks:{color:MUTED}},y:{grid:{color:GRID},ticks:{callback:v=>'$'+v+'B',color:MUTED}}}}
+  });
+
+  /* 3 TAM by Sector horizontal bar */
+  new Chart(document.getElementById('chartTAM').getContext('2d'), {
+    type:'bar',
+    data:{
+      labels:['Aircraft Leasing','Commercial Airlines','CAMO & Consulting','MRO Facilities','Aviation Finance'],
+      datasets:[{
+        label:'Annual TAM (£M)',
+        data:[9.75,20,6,18,4],
+        backgroundColor:['rgba(14,165,233,0.82)','rgba(2,132,199,0.72)','rgba(245,158,11,0.65)','rgba(14,165,233,0.5)','rgba(2,132,199,0.48)'],
+        borderRadius:5,barPercentage:0.6
+      }]
+    },
+    options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{grid:{color:GRID},ticks:{callback:v=>'£'+v+'M',color:MUTED}},y:{grid:{display:false},ticks:{color:MUTED}}}}
+  });
+
+  /* 4 Competitive Radar */
+  new Chart(document.getElementById('chartRadar').getContext('2d'), {
+    type:'radar',
+    data:{
+      labels:['AI Depth','UK Compliance','Blockchain Trust','Offline Hangar','RFI Mapping','Transition-Centric'],
+      datasets:[
+        {label:'Zeto  Aeroguard',data:[5,5,5,5,5,5],backgroundColor:'rgba(14,165,233,0.15)',borderColor:'#0EA5E9',borderWidth:2.5,pointBackgroundColor:'#0EA5E9'},
+        {label:'FLYdocs',data:[2,3,1,1,1,2],backgroundColor:'rgba(245,158,11,0.08)',borderColor:'rgba(245,158,11,0.7)',borderWidth:1.5,pointBackgroundColor:'rgba(245,158,11,0.7)'},
+        {label:'AerData',data:[1,2,1,1,2,1],backgroundColor:'rgba(239,68,68,0.06)',borderColor:'rgba(239,68,68,0.5)',borderWidth:1.5,pointBackgroundColor:'rgba(239,68,68,0.5)'},
+      ]
+    },
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{boxWidth:10,padding:14,color:MUTED}}},scales:{r:{backgroundColor:'rgba(14,165,233,0.02)',grid:{color:GRID},pointLabels:{color:MUTED,font:{size:11}},ticks:{display:false},min:0,max:5}}}
+  });
+
+  /* 5 Global MRO Market */
+  new Chart(document.getElementById('chartMRO').getContext('2d'), {
+    type:'bar',
+    data:{
+      labels:['2024','2025','2026','2027','2028','2029','2030','2031'],
+      datasets:[
+        {label:'Market Size (USD Bn)',data:[81,87,95,104,114,125,137,149],backgroundColor:'rgba(14,165,233,0.75)',borderRadius:5,barPercentage:0.55},
+        {type:'line',label:'YoY Growth %',data:[null,7.4,9.2,9.5,9.6,9.6,9.6,8.8],borderColor:'rgba(245,158,11,0.9)',borderWidth:2,yAxisID:'y2',tension:0.4,pointBackgroundColor:'rgba(245,158,11,0.9)',fill:false}
+      ]
+    },
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{boxWidth:10,padding:14,color:MUTED}}},scales:{x:{grid:{color:GRID},ticks:{color:MUTED}},y:{grid:{color:GRID},ticks:{callback:v=>'$'+v+'B',color:MUTED}},y2:{position:'right',grid:{display:false},ticks:{callback:v=>v+'%',color:MUTED}}}}
+  });
+
+  /* 6 Zeto vs Manual */
+  new Chart(document.getElementById('chartPerf').getContext('2d'), {
+    type:'bar',
+    data:{
+      labels:['Audit Speed','OCR Accuracy','Findings Detection','Cost Efficiency','Compliance Coverage','Asset Utilisation'],
+      datasets:[
+        {label:'Zeto  Aeroguard',data:[94,94,98,90,95,88],backgroundColor:'rgba(14,165,233,0.78)',borderRadius:5,barPercentage:0.35},
+        {label:'Manual Process',data:[22,55,40,30,45,35],backgroundColor:'rgba(239,68,68,0.5)',borderRadius:5,barPercentage:0.35}
+      ]
+    },
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{boxWidth:10,padding:14,color:MUTED}},tooltip:{callbacks:{label:c=>c.dataset.label+': '+c.raw+' pts'}}},scales:{x:{grid:{color:GRID},ticks:{color:MUTED}},y:{grid:{color:GRID},ticks:{callback:v=>v+' pts',color:MUTED}}}}
+  });
+}
+
+/* ============================================================
+   FINANCIAL CHARTS
+============================================================ */
+function initFinancialCharts(){
+
+  /* 1 Revenue by stream stacked 5 years */
+  new Chart(document.getElementById('chartRevStream').getContext('2d'), {
+    type:'bar',
+    data:{
+      labels:['Year 1','Year 2','Year 3','Year 4','Year 5'],
+      datasets:[
+        {label:'SaaS Subscriptions',data:[45000,160000,640000,1300000,1820000],backgroundColor:'rgba(14,165,233,0.82)',borderRadius:4},
+        {label:'Transactional Audit Packs',data:[20000,80000,320000,650000,910000],backgroundColor:'rgba(2,132,199,0.68)',borderRadius:4},
+        {label:'API & SDK Licensing',data:[5000,15000,60000,150000,220000],backgroundColor:'rgba(245,158,11,0.6)',borderRadius:4},
+        {label:'Add-on Modules',data:[5290,8513,43806,62691,80402],backgroundColor:'rgba(14,165,233,0.32)',borderRadius:4},
+      ]
+    },
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{boxWidth:10,padding:12,color:MUTED}}},scales:{x:{stacked:true,grid:{color:GRID},ticks:{color:MUTED}},y:{stacked:true,grid:{color:GRID},ticks:{callback:v=>'£'+(v>=1000000?(v/1000000).toFixed(1)+'M':(v/1000).toFixed(0)+'K'),color:MUTED}}}}
+  });
+
+  /* 2 EBITDA vs Net Profit */
+  new Chart(document.getElementById('chartMargin').getContext('2d'), {
+    type:'bar',
+    data:{
+      labels:['Year 1','Year 2','Year 3','Year 4','Year 5'],
+      datasets:[
+        {label:'EBITDA',data:[27234,90211,360941,825422,1114286],backgroundColor:'rgba(14,165,233,0.72)',borderRadius:5,barPercentage:0.4},
+        {label:'Net Profit',data:[20425,66533,265831,610816,822590],backgroundColor:'rgba(245,158,11,0.72)',borderRadius:5,barPercentage:0.4},
+      ]
+    },
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{boxWidth:10,padding:12,color:MUTED}}},scales:{x:{grid:{color:GRID},ticks:{color:MUTED}},y:{grid:{color:GRID},ticks:{callback:v=>'£'+(v/1000).toFixed(0)+'K',color:MUTED}}}}
+  });
+
+  /* 3 Monthly Cash Flow Y1 */
+  const months=['M1','M2','M3','M4','M5','M6','M7','M8','M9','M10','M11','M12'];
+  const monthlyCF=[-8916,-3211,-3211,-3211,-3211,-3211,79,5132,8602,12011,12716,15420];
+  const cumBalance=[41084,37874,34663,31452,28242,25031,25110,30242,38844,50855,63570,78991];
+
+  new Chart(document.getElementById('chartCashflow').getContext('2d'), {
+    type:'bar',
+    data:{
+      labels:months,
+      datasets:[
+        {label:'Monthly Net Cash Flow',data:monthlyCF,backgroundColor:monthlyCF.map(v=>v>=0?'rgba(14,165,233,0.72)':'rgba(239,68,68,0.55)'),borderRadius:4,barPercentage:0.5},
+        {type:'line',label:'Closing Balance',data:cumBalance,borderColor:'rgba(245,158,11,0.9)',borderWidth:2,yAxisID:'y2',tension:0.4,pointBackgroundColor:'rgba(245,158,11,0.9)',fill:false}
+      ]
+    },
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{boxWidth:10,padding:12,color:MUTED}}},scales:{x:{grid:{color:GRID},ticks:{color:MUTED}},y:{grid:{color:GRID},ticks:{callback:v=>'£'+(v/1000).toFixed(0)+'K',color:MUTED}},y2:{position:'right',grid:{display:false},ticks:{callback:v=>'£'+(v/1000).toFixed(0)+'K',color:MUTED}}}}
+  });
+
+  /* 4 Sensitivity bar */
+  new Chart(document.getElementById('chartSensitivity').getContext('2d'), {
+    type:'bar',
+    data:{
+      labels:['Base Case','Slower Adoption','Lower Audit Packs','Higher Cloud Costs','Higher OPEX'],
+      datasets:[{
+        label:'Year 2 Net Profit (£)',
+        data:[66533,38000,48000,58000,45000],
+        backgroundColor:['rgba(14,165,233,0.85)','rgba(245,158,11,0.65)','rgba(245,158,11,0.65)','rgba(2,132,199,0.6)','rgba(245,158,11,0.65)'],
+        borderRadius:5,barPercentage:0.55
+      }]
+    },
+    options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{grid:{color:GRID},ticks:{callback:v=>'£'+v.toLocaleString(),color:MUTED}},y:{grid:{display:false},ticks:{color:MUTED}}}}
+  });
+}
+</script>
+</body>
+</html>
