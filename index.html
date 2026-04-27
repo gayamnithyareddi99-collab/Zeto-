@@ -132,18 +132,190 @@ body{font-family:var(--font);color:var(--text-dark);background:var(--off-white);
 .section-divider{width:65px;height:2px;background:linear-gradient(90deg,var(--accent),transparent);margin:14px 0 26px;}
 
 /* ============================================================
-   HERO   dark navy (same deep dark as original)
+   HERO   AVIATION BACKGROUND
 ============================================================ */
 .hero-section{
-  position:relative;padding:140px 7% 90px;background:var(--hero-bg);
+  position:relative;padding:140px 7% 90px;
   overflow:hidden;min-height:100vh;display:flex;align-items:center;
+  background:#020B18;
 }
-.hero-section::before{content:"";position:absolute;top:0;right:0;width:280px;height:280px;background:#0EA5E9;opacity:0.06;clip-path:polygon(100% 0,0 0,100% 100%);}
-.hero-section::after{content:"";position:absolute;bottom:0;left:0;width:300px;height:300px;background:#38BDF8;opacity:0.05;clip-path:polygon(0 100%,0 0,100% 100%);}
-.hero-glow{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:700px;height:700px;background:radial-gradient(circle,rgba(14,165,233,0.07) 0%,transparent 70%);pointer-events:none;}
-.hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(14,165,233,0.05) 1px,transparent 1px),linear-gradient(90deg,rgba(14,165,233,0.05) 1px,transparent 1px);background-size:60px 60px;pointer-events:none;}
-.hero-container{max-width:1200px;margin:auto;display:grid;grid-template-columns:1.1fr 0.9fr;gap:70px;align-items:center;position:relative;z-index:2;width:100%;}
+
+/* Deep space / night sky base */
+.hero-bg-canvas{
+  position:absolute;inset:0;width:100%;height:100%;
+  pointer-events:none;z-index:0;
+}
+
+/* Stars layer */
+.hero-stars{
+  position:absolute;inset:0;z-index:1;pointer-events:none;
+  background-image:
+    radial-gradient(1px 1px at 10% 15%, rgba(255,255,255,0.9) 0%, transparent 100%),
+    radial-gradient(1px 1px at 22% 8%, rgba(255,255,255,0.7) 0%, transparent 100%),
+    radial-gradient(1.5px 1.5px at 35% 20%, rgba(255,255,255,0.8) 0%, transparent 100%),
+    radial-gradient(1px 1px at 48% 5%, rgba(255,255,255,0.6) 0%, transparent 100%),
+    radial-gradient(1px 1px at 62% 12%, rgba(255,255,255,0.9) 0%, transparent 100%),
+    radial-gradient(2px 2px at 75% 7%, rgba(200,230,255,0.9) 0%, transparent 100%),
+    radial-gradient(1px 1px at 88% 18%, rgba(255,255,255,0.7) 0%, transparent 100%),
+    radial-gradient(1px 1px at 5% 35%, rgba(255,255,255,0.5) 0%, transparent 100%),
+    radial-gradient(1px 1px at 18% 42%, rgba(255,255,255,0.8) 0%, transparent 100%),
+    radial-gradient(1.5px 1.5px at 30% 30%, rgba(200,230,255,0.7) 0%, transparent 100%),
+    radial-gradient(1px 1px at 55% 28%, rgba(255,255,255,0.6) 0%, transparent 100%),
+    radial-gradient(1px 1px at 70% 22%, rgba(255,255,255,0.8) 0%, transparent 100%),
+    radial-gradient(1px 1px at 83% 33%, rgba(255,255,255,0.5) 0%, transparent 100%),
+    radial-gradient(2px 2px at 92% 40%, rgba(200,230,255,0.8) 0%, transparent 100%),
+    radial-gradient(1px 1px at 15% 55%, rgba(255,255,255,0.4) 0%, transparent 100%),
+    radial-gradient(1px 1px at 40% 48%, rgba(255,255,255,0.7) 0%, transparent 100%),
+    radial-gradient(1px 1px at 68% 52%, rgba(255,255,255,0.5) 0%, transparent 100%),
+    radial-gradient(1px 1px at 95% 25%, rgba(255,255,255,0.6) 0%, transparent 100%);
+}
+
+/* Atmospheric glow horizon */
+.hero-horizon{
+  position:absolute;bottom:0;left:0;right:0;height:55%;z-index:2;pointer-events:none;
+  background:linear-gradient(to top,
+    #0a1628 0%,
+    #0d2040 15%,
+    #0f2d50 30%,
+    rgba(15,45,80,0.4) 55%,
+    transparent 100%
+  );
+}
+
+/* City lights glow strip */
+.hero-cityline{
+  position:absolute;bottom:28%;left:0;right:0;height:2px;z-index:3;pointer-events:none;
+  background:linear-gradient(90deg,transparent 0%,rgba(14,165,233,0.08) 15%,rgba(245,158,11,0.15) 30%,rgba(14,165,233,0.12) 50%,rgba(245,158,11,0.1) 70%,rgba(14,165,233,0.08) 85%,transparent 100%);
+  filter:blur(2px);
+}
+.hero-cityline::before{
+  content:'';position:absolute;top:-8px;left:0;right:0;height:20px;
+  background:linear-gradient(90deg,transparent 0%,rgba(14,165,233,0.04) 15%,rgba(245,158,11,0.08) 30%,rgba(14,165,233,0.06) 50%,rgba(245,158,11,0.05) 70%,rgba(14,165,233,0.04) 85%,transparent 100%);
+  filter:blur(8px);
+}
+
+/* Runway lights strip at bottom */
+.hero-runway{
+  position:absolute;bottom:0;left:0;right:0;height:28%;z-index:3;pointer-events:none;
+  background:linear-gradient(to top,#050d1a 0%,transparent 100%);
+}
+
+/* Grid radar overlay */
+.hero-grid{
+  position:absolute;inset:0;z-index:4;pointer-events:none;
+  background-image:
+    linear-gradient(rgba(14,165,233,0.04) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(14,165,233,0.04) 1px,transparent 1px);
+  background-size:60px 60px;
+}
+
+/* Central glow beacon */
+.hero-glow{
+  position:absolute;top:40%;left:50%;transform:translate(-50%,-50%);
+  width:900px;height:600px;
+  background:radial-gradient(ellipse,rgba(14,165,233,0.09) 0%,rgba(14,80,150,0.06) 35%,transparent 70%);
+  pointer-events:none;z-index:5;
+}
+
+/* Scan line sweep animation */
+.hero-scanline{
+  position:absolute;inset:0;z-index:5;pointer-events:none;overflow:hidden;
+}
+.hero-scanline::after{
+  content:'';position:absolute;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(14,165,233,0.15),transparent);
+  animation:scanSweep 8s linear infinite;
+  top:0;
+}
+@keyframes scanSweep{from{top:0%}to{top:100%}}
+
+/* Aircraft SVG container */
+.hero-aircraft-wrap{
+  position:absolute;inset:0;z-index:6;pointer-events:none;overflow:hidden;
+}
+
+/* Flying aircraft silhouette — commercial jet left-to-right */
+.plane-a{
+  position:absolute;
+  animation:flightPathA 28s linear infinite;
+  opacity:0.85;
+  top:18%;
+}
+@keyframes flightPathA{
+  0%{left:-12%;opacity:0;transform:translateY(0) scale(0.8);}
+  5%{opacity:0.85;}
+  85%{opacity:0.85;}
+  100%{left:108%;opacity:0;transform:translateY(-30px) scale(0.95);}
+}
+
+/* Second aircraft — higher altitude, smaller */
+.plane-b{
+  position:absolute;
+  animation:flightPathB 42s linear infinite;
+  animation-delay:14s;
+  opacity:0.55;
+  top:10%;
+}
+@keyframes flightPathB{
+  0%{left:-8%;opacity:0;transform:translateY(0) scale(0.5);}
+  5%{opacity:0.55;}
+  90%{opacity:0.55;}
+  100%{left:108%;opacity:0;transform:translateY(-15px) scale(0.55);}
+}
+
+/* Blinking nav lights on aircraft */
+.nav-light{animation:blink 1.2s ease-in-out infinite;}
+.nav-light-slow{animation:blink 2s ease-in-out infinite;}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:0.1;}}
+
+/* Shooting star */
+.hero-meteor{
+  position:absolute;top:12%;left:70%;width:120px;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,0.9),transparent);
+  transform:rotate(-25deg);
+  animation:meteor 12s ease-in-out infinite;
+  animation-delay:5s;
+  opacity:0;z-index:3;
+}
+@keyframes meteor{
+  0%{opacity:0;transform:rotate(-25deg) translateX(0);}
+  2%{opacity:1;}
+  8%{opacity:0;transform:rotate(-25deg) translateX(200px);}
+  100%{opacity:0;}
+}
+
+/* Distant runway lights (perspective dots at horizon) */
+.runway-dots{
+  position:absolute;bottom:27%;left:50%;transform:translateX(-50%);
+  display:flex;gap:18px;z-index:4;pointer-events:none;
+}
+.rdot{
+  width:3px;height:3px;border-radius:50%;
+  background:#F59E0B;opacity:0.7;
+  animation:rwblink 2.5s ease-in-out infinite;
+  box-shadow:0 0 6px rgba(245,158,11,0.8);
+}
+.rdot:nth-child(2){animation-delay:0.4s;background:#38BDF8;box-shadow:0 0 6px rgba(56,189,248,0.8);}
+.rdot:nth-child(3){animation-delay:0.8s;}
+.rdot:nth-child(4){animation-delay:1.2s;background:#38BDF8;box-shadow:0 0 6px rgba(56,189,248,0.8);}
+.rdot:nth-child(5){animation-delay:1.6s;}
+.rdot:nth-child(6){animation-delay:2s;background:#38BDF8;box-shadow:0 0 6px rgba(56,189,248,0.8);}
+.rdot:nth-child(7){animation-delay:0.2s;}
+.rdot:nth-child(8){animation-delay:1.0s;background:#38BDF8;box-shadow:0 0 6px rgba(56,189,248,0.8);}
+@keyframes rwblink{0%,100%{opacity:0.7;}50%{opacity:0.2;}}
+
+/* Corner accent triangles */
+.hero-section::before{content:"";position:absolute;top:0;right:0;width:340px;height:340px;background:linear-gradient(225deg,rgba(14,165,233,0.07),transparent);clip-path:polygon(100% 0,0 0,100% 100%);z-index:6;}
+.hero-section::after{content:"";position:absolute;bottom:0;left:0;width:280px;height:280px;background:linear-gradient(45deg,rgba(56,189,248,0.05),transparent);clip-path:polygon(0 100%,0 0,100% 100%);z-index:6;}
+.hero-container{max-width:1200px;margin:auto;display:grid;grid-template-columns:1.1fr 0.9fr;gap:70px;align-items:center;position:relative;z-index:10;width:100%;}
 .hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(14,165,233,0.1);border:1px solid rgba(14,165,233,0.35);color:#38BDF8;font-size:10px;font-weight:700;letter-spacing:3px;padding:6px 16px;border-radius:3px;text-transform:uppercase;margin-bottom:18px;font-family:var(--mono);}
+/* Contrail */
+.plane-a::after{
+  content:'';position:absolute;right:100%;top:50%;
+  width:180px;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(200,230,255,0.18));
+  transform:translateY(-50%);
+}
 .hero-badge::before{content:"";width:6px;height:6px;border-radius:50%;background:#38BDF8;animation:pulsedot 1.5s ease-in-out infinite;}
 @keyframes pulsedot{0%,100%{opacity:1;transform:scale(1);}50%{opacity:0.4;transform:scale(0.6);}}
 .hero-left h1{font-family:var(--serif);font-size:50px;line-height:1.12;color:#38BDF8;margin-bottom:8px;}
@@ -502,8 +674,109 @@ footer{background:#0B1F35;border-top:1px solid rgba(14,165,233,0.15);padding:60p
 
   <!-- HERO -->
   <section class="hero-section">
-    <div class="hero-glow"></div>
+
+    <!-- ✈ AVIATION BACKGROUND LAYERS ✈ -->
+    <!-- Night sky base canvas -->
+    <div class="hero-stars"></div>
+
+    <!-- Atmospheric depth -->
+    <div class="hero-horizon"></div>
+    <div class="hero-cityline"></div>
+    <div class="hero-runway"></div>
+
+    <!-- Grid overlay -->
     <div class="hero-grid"></div>
+
+    <!-- Glow beacon -->
+    <div class="hero-glow"></div>
+
+    <!-- Scan line effect -->
+    <div class="hero-scanline"></div>
+
+    <!-- Meteor streak -->
+    <div class="hero-meteor"></div>
+
+    <!-- Runway approach lights at horizon -->
+    <div class="runway-dots">
+      <div class="rdot"></div>
+      <div class="rdot"></div>
+      <div class="rdot"></div>
+      <div class="rdot"></div>
+      <div class="rdot"></div>
+      <div class="rdot"></div>
+      <div class="rdot"></div>
+      <div class="rdot"></div>
+    </div>
+
+    <!-- Aircraft silhouettes -->
+    <div class="hero-aircraft-wrap">
+
+      <!-- Primary aircraft — large commercial jet -->
+      <div class="plane-a">
+        <svg width="220" height="70" viewBox="0 0 220 70" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Main fuselage -->
+          <path d="M8 38 Q50 36 110 35 Q160 34 195 30 Q210 28 215 32 Q218 35 210 38 Q190 42 150 42 Q110 43 60 44 Q30 45 8 44 Z" fill="rgba(180,210,240,0.25)" stroke="rgba(56,189,248,0.5)" stroke-width="0.5"/>
+          <!-- Nose cone -->
+          <path d="M195 30 Q212 31 217 34 Q215 37 210 38 Q200 36 195 30Z" fill="rgba(200,230,255,0.35)"/>
+          <!-- Main wings -->
+          <path d="M85 36 Q90 18 110 10 Q115 8 118 12 Q115 22 110 35 Z" fill="rgba(140,190,230,0.3)" stroke="rgba(56,189,248,0.4)" stroke-width="0.4"/>
+          <path d="M85 40 Q90 55 105 62 Q110 64 112 60 Q110 50 108 42 Z" fill="rgba(140,190,230,0.25)" stroke="rgba(56,189,248,0.3)" stroke-width="0.4"/>
+          <!-- Tail fins -->
+          <path d="M18 38 Q22 28 32 26 Q34 27 33 32 Q28 36 20 38Z" fill="rgba(140,190,230,0.3)"/>
+          <path d="M14 42 Q16 50 24 52 Q26 50 24 45 Q20 43 14 42Z" fill="rgba(140,190,230,0.25)"/>
+          <!-- Engine pods -->
+          <ellipse cx="95" cy="14" rx="8" ry="3.5" fill="rgba(100,160,210,0.4)" stroke="rgba(56,189,248,0.3)" stroke-width="0.4"/>
+          <ellipse cx="100" cy="58" rx="7" ry="3" fill="rgba(100,160,210,0.35)" stroke="rgba(56,189,248,0.3)" stroke-width="0.4"/>
+          <!-- Engine intake glow -->
+          <ellipse cx="87" cy="14" rx="3" ry="3.5" fill="rgba(14,165,233,0.5)"/>
+          <ellipse cx="93" cy="58" rx="2.5" ry="3" fill="rgba(14,165,233,0.45)"/>
+          <!-- Engine exhaust -->
+          <path d="M103 14 Q112 13 115 14 Q112 15 103 15Z" fill="rgba(245,158,11,0.6)"/>
+          <path d="M107 58 Q115 57 117 58 Q115 59 107 59Z" fill="rgba(245,158,11,0.55)"/>
+          <!-- Nav light red (left wingtip) -->
+          <circle cx="110" cy="10" r="2.5" fill="#ff4444" class="nav-light" filter="url(#redGlow)"/>
+          <!-- Nav light green (right wingtip) -->
+          <circle cx="105" cy="63" r="2" fill="#44ff88" class="nav-light-slow"/>
+          <!-- Strobe white (tail) -->
+          <circle cx="10" cy="40" r="2" fill="white" class="nav-light"/>
+          <!-- Cockpit windows -->
+          <rect x="200" y="32" width="6" height="3" rx="1.5" fill="rgba(200,240,255,0.6)"/>
+          <rect x="193" y="32" width="5" height="3" rx="1.5" fill="rgba(200,240,255,0.5)"/>
+          <!-- Cabin windows -->
+          <rect x="180" y="33" width="4" height="3" rx="1" fill="rgba(255,240,180,0.4)"/>
+          <rect x="172" y="33" width="4" height="3" rx="1" fill="rgba(255,240,180,0.35)"/>
+          <rect x="164" y="34" width="4" height="3" rx="1" fill="rgba(255,240,180,0.4)"/>
+          <rect x="156" y="34" width="4" height="3" rx="1" fill="rgba(255,240,180,0.3)"/>
+          <rect x="148" y="34" width="4" height="3" rx="1" fill="rgba(255,240,180,0.35)"/>
+          <rect x="140" y="34" width="4" height="3" rx="1" fill="rgba(255,240,180,0.3)"/>
+          <rect x="132" y="35" width="4" height="3" rx="1" fill="rgba(255,240,180,0.25)"/>
+          <!-- Condensation trail glow -->
+          <defs>
+            <filter id="redGlow"><feGaussianBlur stdDeviation="1.5" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+          </defs>
+        </svg>
+      </div>
+
+      <!-- Secondary aircraft — smaller, higher altitude -->
+      <div class="plane-b">
+        <svg width="110" height="35" viewBox="0 0 110 35" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M4 19 Q25 18 55 17.5 Q80 17 97 15 Q105 14 108 16 Q109 17.5 105 19 Q95 21 75 21 Q50 21.5 30 22 Q15 22.5 4 22Z" fill="rgba(180,210,240,0.2)" stroke="rgba(56,189,248,0.35)" stroke-width="0.4"/>
+          <path d="M42 18 Q45 9 55 5 Q57 4 59 6 Q57 11 55 17.5Z" fill="rgba(140,190,230,0.22)"/>
+          <path d="M42 20 Q45 27 52 31 Q54 32 56 30 Q54 25 54 21Z" fill="rgba(140,190,230,0.18)"/>
+          <path d="M9 19 Q11 14 16 13 Q17 13.5 16.5 16 Q14 18 9 19Z" fill="rgba(140,190,230,0.2)"/>
+          <ellipse cx="48" cy="7" rx="4" ry="1.8" fill="rgba(100,160,210,0.35)"/>
+          <circle cx="55" cy="5" r="1.5" fill="#ff4444" class="nav-light"/>
+          <circle cx="52" cy="31" r="1.2" fill="#44ff88" class="nav-light-slow"/>
+          <circle cx="5" cy="20" r="1.2" fill="white" class="nav-light"/>
+          <rect x="98" y="16" width="4" height="2" rx="1" fill="rgba(200,240,255,0.55)"/>
+          <rect x="88" y="17" width="3" height="2" rx="1" fill="rgba(255,240,180,0.3)"/>
+          <rect x="80" y="17" width="3" height="2" rx="1" fill="rgba(255,240,180,0.25)"/>
+        </svg>
+      </div>
+
+    </div>
+    <!-- END AVIATION BACKGROUND -->
+
     <div class="hero-container">
       <div class="hero-left">
         <div class="hero-badge">UK Aviation Technology &middot; Prototype Validated · TRL 7</div>
