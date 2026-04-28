@@ -489,7 +489,7 @@ body{font-family:var(--font);color:var(--text-dark);background:var(--off-white);
    PRICING  light grey
 ============================================================ */
 .pricing-section{padding:120px 7%;background:#F1F5F9;}
-.pricing-container{max-width:1100px;margin:auto;}
+.pricing-container{max-width:900px;margin:auto;}
 .pricing-section .section-title{color:var(--blue-dark);}
 .pricing-section .section-label{color:var(--accent);}
 .pricing-sub{max-width:620px;color:#3A5A78;font-size:16px;line-height:1.8;margin-bottom:55px;}
@@ -621,6 +621,8 @@ footer{background:#0B1F35;border-top:1px solid rgba(14,165,233,0.15);padding:60p
   .market-section,.financial-section,.about-section,.platform-section,
   .pricing-section,.faq-section,.contact-section,.process-section{padding:60px 5%;}
   .price-card{padding:24px;}
+  .price-card.featured{order:-1;}
+  .audit-packs-grid{grid-template-columns:1fr !important;}
   .contact-form{padding:22px;}
   .founder-box{padding:24px;}
   .btn-blue,.btn-outline-blue{padding:11px 22px;font-size:11px;}
@@ -1305,7 +1307,7 @@ footer{background:#0B1F35;border-top:1px solid rgba(14,165,233,0.15);padding:60p
           <div style="width:65px;height:2px;background:linear-gradient(90deg,var(--accent),transparent);margin:14px auto 16px;"></div>
           <p style="max-width:620px;margin:0 auto;color:#3A5A78;font-size:15px;line-height:1.8;">For high-stakes transition events, ZATO-AeroGuard's specialist Audit Packs deliver "First-Time-Right" outcomes backed by blockchain sign-offs, predictive liability reports, and regulatory pre-clearance &mdash; protecting asset value at the most critical point in its lifecycle.</p>
         </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;">
+        <div class="audit-packs-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:24px;">
           <div style="background:#fff;border:1px solid #CBD8E8;border-radius:12px;padding:30px;position:relative;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.04);">
             <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#0EA5E9,transparent);"></div>
             <div style="font-family:var(--mono);font-size:9px;color:#0369A1;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;">Narrow-Body Transition</div>
